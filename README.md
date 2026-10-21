@@ -15,6 +15,7 @@ Hosted on Vercel. Pushes to `main` deploy to production automatically once the r
 Required environment variable (Vercel → Settings → Environment Variables):
 - `ANTHROPIC_API_KEY` — needed for `/analyze`
 - `ANTHROPIC_MODEL` — optional, defaults to `claude-sonnet-5-5`
+- `ANTHROPIC_WORKSPACE_ID` — only needed if the API key is not scoped to a workspace
 
 `vercel.json` enables clean URLs (`/sources` instead of `/sources.html`).
 
