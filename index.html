@@ -161,7 +161,35 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .legend-kinds span{display:inline-flex;align-items:center;gap:4px}
 .legend-kinds i{width:8px;height:8px;border-radius:50%;background:var(--k);display:inline-block}
 .ini-own{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-2)}
-.ini-own a{font-weight:600;color:var(--ink)}
+.ownbtn{border:0;background:none;color:var(--ink);font:inherit;font-weight:600;font-size:.85rem;cursor:pointer;padding:0}
+.ownbtn.solid{background:var(--ink);color:var(--bg);border-radius:8px;padding:8px 14px}
+.ownbtn.solid[disabled]{opacity:.5;cursor:wait}
+#ownform{margin-top:8px}
+#owndesc{width:100%;min-height:96px;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;font-size:.9rem;background:var(--bg);color:var(--ink);resize:vertical}
+.ownrow{display:flex;gap:10px;align-items:center;margin-top:8px}
+.owncount{font-size:.75rem;color:var(--ink-3);margin-left:auto}
+.ownerr{color:var(--f-direct);font-size:.85rem;margin-top:6px}
+#ownresult{margin-top:10px}
+.ownread{color:var(--ink);font-size:.9rem;max-width:76ch;margin:0 0 8px}
+.ownread b{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);margin-bottom:2px}
+.ownlists{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px 24px}
+.ownlists h4{margin:0 0 4px;font-size:.8rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.ownlists .ichip{margin:0 4px 4px 0}
+.ownlists .ichip.gap i{background:transparent;border:1.5px dashed var(--k)}
+.ownlists .ichip.partial i{background:linear-gradient(90deg,var(--k) 50%,transparent 50%)}
+.ownacts{margin-top:8px;display:flex;gap:6px}
+.ownacts button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:4px 9px;font:inherit;font-size:.78rem;cursor:pointer}
+.tile.gap{opacity:1;outline:2px dashed var(--ink-3);outline-offset:-2px}
+.panel .ownsug{margin-top:10px;max-width:70ch}
+.panel .ownsug button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:5px 10px;font:inherit;font-size:.82rem;cursor:pointer}
+.panel .ownsug ul{list-style:none;padding:0;margin:8px 0 0}
+.panel .ownsug li{padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}
+.panel .ownsug .t{font-weight:700}
+.panel .ownsug .e{font-size:.7rem;color:var(--ink-3);margin-left:8px;text-transform:uppercase;letter-spacing:.04em}
+.panel .ownsug .f{color:var(--ink-2);font-size:.86rem;margin-top:2px}
+.panel .ownsug .f b{color:var(--ink);font-weight:600}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -188,7 +216,15 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <div class="ini-strip" id="inistrip" role="group" aria-label="Initiatives"></div>
   <div class="legend-kinds" id="inikinds"></div>
   <div class="ini-caption" id="inicaption" hidden></div>
-  <div class="ini-own"><a href="/analyze">Not on the list? Analyze your own initiative →</a> <span>see which elements it meets and how to add more.</span></div>
+  <div class="ini-own" id="iniown">
+    <button type="button" class="ownbtn" id="ownbtn" aria-expanded="false">Not on the list? Analyze your own initiative →</button>
+    <div id="ownform" hidden>
+      <textarea id="owndesc" maxlength="2500" placeholder="Describe a project, product, campaign, organization, or idea in a few sentences: what it is, who takes part, what they actually do."></textarea>
+      <div class="ownrow"><button type="button" class="ownbtn solid" id="owngo">Analyze</button><span class="owncount" id="owncount">0 / 2500</span></div>
+      <div class="ownerr" id="ownerr"></div>
+    </div>
+    <div id="ownresult" hidden></div>
+  </div>
 </div>
 
 <div class="scroller"><div class="table" id="table" role="grid" aria-label="Periodic table of democratic engagement"></div></div>
@@ -218,6 +254,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
       <div class="ai-line" id="pai"></div>
       <div class="tools"><b>Tools and on-ramps:</b> <span id="ptools"></span></div>
       <div class="ini-line" id="pini" hidden></div>
+      <div class="ownsug" id="pown" hidden></div>
       <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
     </div>
   </div>
@@ -506,6 +543,7 @@ function setIni(on){
   iniBox.hidden=!on;document.body.classList.toggle('ini-on',on);
   if(!on){activeIni=null;}
   renderIni();render();
+  document.getElementById('pown').hidden=!(on&&own);
 }
 function selectIni(id,scroll=true){
   if(id&&!iniOn)setIni(true);
@@ -523,6 +561,44 @@ function renderIni(){
   iniCap.innerHTML=`<div class="txt"><span class="k">${KIND[i.k].name} · ${STATUS[i.st]} · ${i.y}</span><b>${i.n}.</b> ${i.d}<br><span style="color:var(--ink-3);font-size:.8rem">Elements: ${names}</span></div><div class="acts">${i.u?`<a href="${i.u}" target="_blank" rel="noopener">Site ↗</a>`:''}<button type="button" id="iniclear">Clear</button></div>`;
   iniCap.hidden=false;
   document.getElementById('iniclear').onclick=()=>selectIni(null);
+}
+
+/* ---------- Your own initiative (inline analyzer) ---------- */
+let own=null; // {desc, read, matches:{z:strength}, gaps:[z]}
+const ownbtn=document.getElementById('ownbtn'),ownform=document.getElementById('ownform'),owndesc=document.getElementById('owndesc'),owngo=document.getElementById('owngo'),ownerr=document.getElementById('ownerr'),ownres=document.getElementById('ownresult');
+ownbtn.onclick=()=>{const open=ownform.hidden;ownform.hidden=!open;ownbtn.setAttribute('aria-expanded',String(open));if(open)owndesc.focus();};
+owndesc.addEventListener('input',()=>{document.getElementById('owncount').textContent=owndesc.value.length+' / 2500';});
+function esc(x){return String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+owngo.onclick=async()=>{
+  const desc=owndesc.value.trim();ownerr.textContent='';
+  if(desc.length<20){ownerr.textContent='Give it a little more to work with, a few sentences at least.';return;}
+  owngo.disabled=true;ownerr.innerHTML='<span class="spin"></span><span style="color:var(--ink-2)">Reading it against all 118 elements…</span>';
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'match',description:desc})});
+    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');
+    own={desc,read:d.read||'',matches:Object.fromEntries((d.matches||[]).map(m=>[m.z,m.strength==='strong'?'strong':'partial'])),gaps:(d.gaps||[]).map(g=>g.z),why:Object.fromEntries([...(d.matches||[]),...(d.gaps||[])].map(m=>[m.z,m.why||'']))};
+    activeIni=null;renderIni();renderOwn();render();ownerr.textContent='';
+  }catch(e){ownerr.textContent=e.message;}
+  owngo.disabled=false;
+};
+function chipFor(z,cls){const e=els.find(x=>x.z===z);if(!e)return '';return `<button type="button" class="ichip ${cls}" style="--k:${FAM[e.f].c}" data-z="${z}" title="${esc(own.why[z])}"><i></i>${e.s} ${esc(e.n)}</button>`;}
+function renderOwn(){
+  if(!own){ownres.hidden=true;ownres.innerHTML='';return;}
+  const m=Object.keys(own.matches).map(Number).sort((a,b)=>a-b),g=own.gaps;
+  ownres.innerHTML=`<p class="ownread"><b>The read</b>${esc(own.read)}</p><div class="ownlists"><div><h4>Already present</h4>${m.map(z=>chipFor(z,own.matches[z])).join('')||'<span style="color:var(--ink-3)">Nothing clearly matched.</span>'}</div><div><h4>Would strengthen it most</h4>${g.map(z=>chipFor(z,'gap')).join('')}</div></div><div class="ownacts"><button type="button" id="ownclear">Clear</button></div><p style="font-size:.75rem;color:var(--ink-3);margin:8px 0 0">A model’s reading of your description, not a verdict. Tap any element for ways to add it.</p>`;
+  ownres.hidden=false;
+  ownres.querySelectorAll('.ichip').forEach(b=>b.onclick=()=>open(+b.dataset.z));
+  document.getElementById('ownclear').onclick=()=>{own=null;renderOwn();render();document.getElementById('pown').hidden=true;};
+}
+async function suggestOwn(z){
+  const box=document.getElementById('pown');const e=els.find(x=>x.z===z);
+  box.innerHTML='<p style="margin:0;color:var(--ink-2);font-size:.9rem"><span class="spin"></span>Working out how your initiative could add this…</p>';
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'suggest',description:own.desc,element:z})});
+    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');
+    if(cur!==z)return;
+    box.innerHTML=`<p style="margin:0;font-size:.9rem"><b>${esc(d.summary||'')}</b></p><ul>${(d.suggestions||[]).map(x=>`<li><span class="t">${esc(x.title)}</span><span class="e">${esc(x.effort||'')} effort</span><div>${esc(x.how)}</div><div class="f"><b>First step:</b> ${esc(x.first_step)}</div></li>`).join('')}</ul>${d.watch_out?`<p class="f" style="margin:8px 0 0;color:var(--ink-2);font-size:.86rem"><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}`;
+  }catch(err){box.innerHTML=`<p style="margin:0;color:var(--f-direct);font-size:.9rem">${esc(err.message)}</p>`;}
 }
 
 // build table
@@ -562,11 +638,14 @@ function render(){
     const t=table.querySelector(`.tile[data-z="${e.z}"]`);
     const famOk=(!activeFam||e.f===activeFam)&&(!aiOn||activeAI===null||e.ai===activeAI);
     const qOk=!q||(e.n+' '+e.d+' '+e.t+' '+e.s).toLowerCase().includes(q);
-    const hit=!!ini&&ini.e.includes(e.z);
-    const iniOk=!ini||hit;
+    let hit=!!ini&&ini.e.includes(e.z);
+    let iniOk=!ini||hit;
+    let gap=false;
+    if(!ini&&own){const st=own.matches[e.z];gap=own.gaps.includes(e.z);hit=!!st;iniOk=hit||gap;if(hit)t.style.setProperty('--k',st==='strong'?'var(--ink)':'var(--ink-3)');}
+    else if(hit)t.style.setProperty('--k',KIND[ini.k].c);
     t.classList.toggle('dim',!(famOk&&qOk&&iniOk));
     t.classList.toggle('hit',hit&&famOk&&qOk);
-    if(hit)t.style.setProperty('--k',KIND[ini.k].c);
+    t.classList.toggle('gap',gap&&famOk&&qOk);
     const row=fsec.querySelector(`.row-item[data-z="${e.z}"]`);
     row.style.display=(famOk&&qOk&&iniOk)?'':'none';
   });
@@ -592,6 +671,9 @@ function open(z){
     pini.hidden=false;pini.innerHTML='<b>Who has tried it:</b><br>';
     tried.forEach(i=>{const b=document.createElement('button');b.className='ichip '+i.st;b.style.setProperty('--k',KIND[i.k].c);b.innerHTML=`<i></i>${i.n} <span class="yr">${i.y}</span>`;b.title=KIND[i.k].name+' · '+STATUS[i.st];b.onclick=()=>{selectIni(i.id);iniBox.scrollIntoView({block:'start',behavior:'smooth'});};pini.appendChild(b);});
   } else {pini.hidden=true;pini.innerHTML='';}
+  const pown=document.getElementById('pown');
+  if(own){const st=own.matches[z];pown.hidden=false;pown.innerHTML=`<p style="margin:0 0 6px;font-size:.9rem;color:var(--ink-2)"><b style="color:var(--ink)">Your initiative:</b> ${st?(st==='strong'?'already does this':'does this partly'):(own.gaps.includes(z)?'would be strengthened by this':'does not do this yet')}${own.why[z]?' — '+esc(own.why[z]):''}.</p><button type="button" id="pownbtn">${st==='strong'?'How to do it better':'How to add this'}</button>`;document.getElementById('pownbtn').onclick=()=>suggestOwn(z);}
+  else{pown.hidden=true;pown.innerHTML='';}
   document.querySelectorAll('.tile.active').forEach(t=>t.classList.remove('active'));
   table.querySelector(`.tile[data-z="${z}"]`).classList.add('active');
   panel.classList.add('open');
