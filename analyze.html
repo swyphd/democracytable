@@ -177,8 +177,7 @@ $('go').onclick=async()=>{
   $('go').disabled=true;$('status').innerHTML='<span class="spin"></span>Reading your initiative against all 118 elements…';
   try{
     const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'match',description:desc})});
-    const data=await r.json();
-    if(!r.ok||data.error)throw new Error(data.error||'Something went wrong.');
+    const data=await readJSON(r);
     lastDesc=desc;render(data);
   }catch(e){$('err').textContent=e.message;}
   $('go').disabled=false;$('status').textContent='';
@@ -206,11 +205,14 @@ async function suggest(z){
   $('pbody').innerHTML='<p class="warn"><span class="spin"></span>Working out how your initiative could add this…</p>';
   try{
     const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'suggest',description:lastDesc,element:z})});
-    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');
+    const d=await readJSON(r);
     if(current!==z)return;
     $('pbody').innerHTML=`<p><b>${esc(d.summary||'')}</b></p><ul class="sug">${(d.suggestions||[]).map(s=>`<li><span class="t">${esc(s.title)}</span><span class="e">${esc(s.effort||'')} effort</span><div class="h">${esc(s.how)}</div><div class="f"><b>First step:</b> ${esc(s.first_step)}</div></li>`).join('')}</ul>${d.watch_out?`<p class="warn"><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}`;
   }catch(err){$('pbody').innerHTML=`<p class="warn">${esc(err.message)}</p>`;}
 }
+async function readJSON(r){const txt=await r.text();let d=null;try{d=JSON.parse(txt);}catch{}
+  if(!d){throw new Error(r.status===504||r.status===503?'The analysis took too long. Try a shorter description, or try again.':'The server returned an unexpected response ('+r.status+'). Please try again.');}
+  if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');return d;}
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 $('close').onclick=()=>{$('panel').classList.remove('open');document.querySelectorAll('.tile.sel').forEach(t=>t.classList.remove('sel'));};
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape')$('close').click();});

@@ -568,6 +568,9 @@ let own=null; // {desc, read, matches:{z:strength}, gaps:[z]}
 const ownbtn=document.getElementById('ownbtn'),ownform=document.getElementById('ownform'),owndesc=document.getElementById('owndesc'),owngo=document.getElementById('owngo'),ownerr=document.getElementById('ownerr'),ownres=document.getElementById('ownresult');
 ownbtn.onclick=()=>{const open=ownform.hidden;ownform.hidden=!open;ownbtn.setAttribute('aria-expanded',String(open));if(open)owndesc.focus();};
 owndesc.addEventListener('input',()=>{document.getElementById('owncount').textContent=owndesc.value.length+' / 2500';});
+async function readJSON(r){const txt=await r.text();let d=null;try{d=JSON.parse(txt);}catch{}
+  if(!d){throw new Error(r.status===504||r.status===503?'The analysis took too long. Try a shorter description, or try again.':'The server returned an unexpected response ('+r.status+'). Please try again.');}
+  if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');return d;}
 function esc(x){return String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 owngo.onclick=async()=>{
   const desc=owndesc.value.trim();ownerr.textContent='';
@@ -575,7 +578,7 @@ owngo.onclick=async()=>{
   owngo.disabled=true;ownerr.innerHTML='<span class="spin"></span><span style="color:var(--ink-2)">Reading it against all 118 elements…</span>';
   try{
     const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'match',description:desc})});
-    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');
+    const d=await readJSON(r);
     own={desc,read:d.read||'',matches:Object.fromEntries((d.matches||[]).map(m=>[m.z,m.strength==='strong'?'strong':'partial'])),gaps:(d.gaps||[]).map(g=>g.z),why:Object.fromEntries([...(d.matches||[]),...(d.gaps||[])].map(m=>[m.z,m.why||'']))};
     activeIni=null;renderIni();renderOwn();render();ownerr.textContent='';
   }catch(e){ownerr.textContent=e.message;}
@@ -595,7 +598,7 @@ async function suggestOwn(z){
   box.innerHTML='<p style="margin:0;color:var(--ink-2);font-size:.9rem"><span class="spin"></span>Working out how your initiative could add this…</p>';
   try{
     const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'suggest',description:own.desc,element:z})});
-    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');
+    const d=await readJSON(r);
     if(cur!==z)return;
     box.innerHTML=`<p style="margin:0;font-size:.9rem"><b>${esc(d.summary||'')}</b></p><ul>${(d.suggestions||[]).map(x=>`<li><span class="t">${esc(x.title)}</span><span class="e">${esc(x.effort||'')} effort</span><div>${esc(x.how)}</div><div class="f"><b>First step:</b> ${esc(x.first_step)}</div></li>`).join('')}</ul>${d.watch_out?`<p class="f" style="margin:8px 0 0;color:var(--ink-2);font-size:.86rem"><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}`;
   }catch(err){box.innerHTML=`<p style="margin:0;color:var(--f-direct);font-size:.9rem">${esc(err.message)}</p>`;}

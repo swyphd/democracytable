@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   const desc = String(description || '').trim().slice(0, 2500);
   if (!desc) return res.status(400).json({ error: 'Describe your initiative first.' });
 
-  const catalogue = elements.map(e => `${e.z}. ${e.n} [${FAMILY[e.f]}] — ${e.d}`).join('\n');
+  const catalogue = elements.map(e => `${e.z} ${e.n} (${FAMILY[e.f].split(' ')[0]})`).join('; ');
   let system, user, maxTokens;
 
   if (mode === 'suggest') {
@@ -29,11 +29,11 @@ module.exports = async (req, res) => {
     if (!el) return res.status(400).json({ error: 'Unknown element.' });
     system = 'You are an experienced civic organizer and democratic-design consultant. You give concrete, specific, realistic advice for small organizations and individuals. No platitudes. Respond ONLY with valid JSON, no prose before or after.';
     user = `The initiative:\n${desc}\n\nThe element to add to it:\n${el.z}. ${el.n} (${FAMILY[el.f]}) — ${el.d}\nCommon tools and on-ramps for this element: ${el.t}\n\nGive 3 to 5 ways this particular initiative could incorporate this element. Each should be specific to what the initiative actually is, name a concrete first step someone could take this week, and estimate effort. Also give one honest caution about doing it badly.\n\nJSON shape:\n{"summary":"one sentence on why this element would strengthen this initiative","suggestions":[{"title":"short name","how":"2-3 sentences, specific to the initiative","first_step":"one concrete action","effort":"low|medium|high"}],"watch_out":"one sentence"}`;
-    maxTokens = 1200;
+    maxTokens = 900;
   } else {
     system = 'You are an analyst of democratic participation who knows the Periodic Table of Democratic Engagement well. You are strict: an initiative "meets" an element only if it actually does that thing, not if it is vaguely related. Respond ONLY with valid JSON, no prose before or after.';
-    user = `The catalogue of 118 elements:\n${catalogue}\n\nThe initiative:\n${desc}\n\nTasks:\n1. List the elements this initiative already meets. Mark each "strong" (clearly a core part of what it does) or "partial" (present but minor or implicit). Typically 4 to 15 elements. Give a one-sentence reason each.\n2. Pick the 3 to 5 elements that are missing and would most strengthen it, with a one-sentence reason each. Prefer elements adjacent to what it already does.\n3. Write a two-sentence read of the initiative's democratic character: which families it lives in and how deep in the table it reaches.\n\nJSON shape:\n{"read":"...","matches":[{"z":1,"strength":"strong","why":"..."}],"gaps":[{"z":1,"why":"..."}]}`;
-    maxTokens = 1800;
+    user = `The catalogue of 118 elements:\n${catalogue}\n\nThe initiative:\n${desc}\n\nTasks:\n1. List the elements this initiative already meets. Mark each "strong" (clearly a core part of what it does) or "partial" (present but minor or implicit). Typically 4 to 12 elements. Give a reason of at most 12 words each.\n2. Pick the 3 to 5 elements that are missing and would most strengthen it, with a reason of at most 12 words each. Prefer elements adjacent to what it already does.\n3. Write a two-sentence read of the initiative's democratic character: which families it lives in and how deep in the table it reaches.\n\nJSON shape:\n{"read":"...","matches":[{"z":1,"strength":"strong","why":"..."}],"gaps":[{"z":1,"why":"..."}]}`;
+    maxTokens = 1100;
   }
 
   try {
@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
       headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({ model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5', max_tokens: maxTokens, system, messages: [{ role: 'user', content: user }] })
     });
-    const data = await r.json();
+    const data = await r.json().catch(() => ({}));
     if (!r.ok) return res.status(502).json({ error: (data && data.error && data.error.message) || 'Model request failed.' });
     const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
     const parsed = extractJSON(text);
