@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Analyze an initiative — Democracy Table</title>
+<meta name="description" content="Describe a project, product, or initiative and see which elements of democratic engagement it already meets, then get concrete suggestions for adding the ones it lacks.">
+<meta property="og:title" content="Analyze an initiative — Democracy Table">
+<meta property="og:description" content="Which elements of democratic engagement does your project meet? Which could it add?">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://democracytable.com/analyze">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#EDF0F4; --surface:#FFFFFF; --ink:#1C2430; --ink-2:#4B5665; --ink-3:#7A8594;
+  --line:#CBD2DB; --accent:#1C2430;
+  --f-info:#2F67D1; --f-delib:#1F968A; --f-elect:#6E4FD1; --f-direct:#D13F3F; --f-acct:#B8800F;
+  --f-org:#2E9348; --f-adv:#D4712A; --f-gov:#3E5F96; --f-econ:#B2407F;
+  --tint:14%;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#141A22; --surface:#1E2631; --ink:#EEF1F5; --ink-2:#B6BFCB; --ink-3:#7F8A98;
+    --line:#2F3A48; --accent:#EEF1F5;
+    --f-info:#6B9BFF; --f-delib:#4CC9BA; --f-elect:#A58CFF; --f-direct:#FF7A7A; --f-acct:#E9B54A;
+    --f-org:#5FD47A; --f-adv:#FFA05C; --f-gov:#8AAEE8; --f-econ:#E87AB6;
+    --tint:22%;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#141A22; --surface:#1E2631; --ink:#EEF1F5; --ink-2:#B6BFCB; --ink-3:#7F8A98;
+  --line:#2F3A48; --accent:#EEF1F5;
+  --f-info:#6B9BFF; --f-delib:#4CC9BA; --f-elect:#A58CFF; --f-direct:#FF7A7A; --f-acct:#E9B54A;
+  --f-org:#5FD47A; --f-adv:#FFA05C; --f-gov:#8AAEE8; --f-econ:#E87AB6;
+  --tint:22%;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 120px}
+.back{display:inline-block;font-size:.85rem;color:var(--ink-2);text-decoration:none;margin-bottom:18px}
+h1{font-size:clamp(1.5rem,4.5vw,2.3rem);font-weight:800;letter-spacing:-0.02em;line-height:1.08;margin:0 0 8px;max-width:20ch}
+.lede{color:var(--ink-2);max-width:62ch;margin:0 0 22px}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;max-width:760px}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit;font-size:.95rem;background:var(--bg);color:var(--ink);resize:vertical}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.btn{border:0;background:var(--ink);color:var(--bg);border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn[disabled]{opacity:.5;cursor:wait}
+.ghost{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:9px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.count{font-size:.78rem;color:var(--ink-3);margin-left:auto}
+.err{color:var(--f-direct);font-size:.9rem;margin-top:8px}
+.status{font-size:.88rem;color:var(--ink-2);margin-top:8px}
+
+.results{display:none;margin-top:30px}
+.results.on{display:block}
+.read{background:var(--surface);border-left:4px solid var(--ink);padding:12px 16px;border-radius:0 8px 8px 0;max-width:760px;margin-bottom:18px}
+.read b{display:block;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.key{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--ink-2);margin:0 0 8px}
+.key i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line)}
+.key .s{background:var(--ink)}.key .p{background:repeating-linear-gradient(45deg,var(--ink) 0 3px,transparent 3px 6px)}.key .g{border:2px dashed var(--ink);background:transparent}
+.scroller{overflow-x:auto;padding-bottom:6px}
+.table{display:grid;grid-template-columns:72px repeat(18,minmax(54px,1fr));grid-template-rows:repeat(7,auto) 16px repeat(2,auto);gap:4px;min-width:1130px}
+.plabel{grid-column:1;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:var(--ink-3);font-size:.72rem;line-height:1.15;text-align:right}
+.tile{position:relative;border:0;border-radius:4px;padding:5px 5px 4px;min-height:58px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);background:color-mix(in srgb,var(--c) var(--tint),var(--surface));box-shadow:inset 0 -3px 0 var(--c);opacity:.22;transition:opacity .2s,transform .12s}
+.tile:hover{transform:translateY(-2px);opacity:.6}
+.tile .z{position:absolute;top:4px;left:5px;font-size:.6rem;color:var(--ink-3)}
+.tile .sym{display:block;margin-top:10px;font-weight:800;font-size:1.15rem;color:var(--c);line-height:1}
+.tile .nm{display:block;font-size:.58rem;line-height:1.1;color:var(--ink-2);margin-top:3px;max-height:2.2em;overflow:hidden}
+.tile.strong{opacity:1;box-shadow:inset 0 -3px 0 var(--c),0 0 0 2px var(--c)}
+.tile.partial{opacity:1;box-shadow:inset 0 -3px 0 var(--c);background:repeating-linear-gradient(45deg,color-mix(in srgb,var(--c) 28%,var(--surface)) 0 4px,color-mix(in srgb,var(--c) 10%,var(--surface)) 4px 8px)}
+.tile.gap{opacity:1;outline:2px dashed var(--c);outline-offset:-2px}
+.tile.sel{transform:translateY(-2px);box-shadow:inset 0 -3px 0 var(--c),0 0 0 3px var(--ink)}
+.lists{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px 28px;margin-top:22px}
+.lists h3{font-size:1rem;margin:0 0 6px}
+.item{display:flex;gap:10px;align-items:flex-start;width:100%;border:0;background:none;color:var(--ink);font:inherit;text-align:left;padding:7px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.item .s{font-weight:800;color:var(--c);min-width:2.3em;font-size:.95rem;padding-top:1px}
+.item .n{font-weight:600;font-size:.92rem}
+.item .w{font-size:.85rem;color:var(--ink-2);display:block;margin-top:1px}
+.item .tag{font-size:.7rem;color:var(--ink-3);margin-left:6px;font-weight:400}
+.hint{font-size:.82rem;color:var(--ink-3);margin-top:10px}
+
+.panel{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -8px 30px rgba(0,0,0,.12);transform:translateY(105%);transition:transform .22s ease;z-index:20;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:78vh;overflow:auto}
+.panel.open{transform:none}
+.panel-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.bigtile{width:84px;height:84px;border-radius:6px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface));box-shadow:inset 0 -4px 0 var(--c);position:relative}
+.bigtile .z{position:absolute;top:6px;left:8px;font-size:.7rem;color:var(--ink-3)}
+.bigtile .sym{position:absolute;left:8px;bottom:10px;font-weight:800;font-size:2rem;color:var(--c);line-height:1}
+.panel h2{margin:0;font-size:1.25rem;font-weight:800}
+.panel .fam{font-size:.8rem;font-weight:600;margin:2px 0 8px}
+.panel p{margin:0 0 8px;max-width:70ch}
+.sug{margin:10px 0 0;padding:0;list-style:none;max-width:70ch}
+.sug li{padding:10px 0;border-top:1px solid var(--line)}
+.sug .t{font-weight:700}
+.sug .e{font-size:.72rem;color:var(--ink-3);margin-left:8px;text-transform:uppercase;letter-spacing:.04em}
+.sug .h{font-size:.92rem;color:var(--ink);margin:3px 0}
+.sug .f{font-size:.88rem;color:var(--ink-2)}
+.sug .f b{color:var(--ink);font-weight:600}
+.warn{font-size:.88rem;color:var(--ink-2);margin-top:10px;max-width:70ch}
+.close{position:absolute;top:10px;right:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:32px;height:32px;font:inherit;cursor:pointer}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.tile,.panel{transition:none}.spin{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="/">← Back to the table</a>
+<h1>What elements does your initiative meet?</h1>
+<p class="lede">Describe a project, product, campaign, organization, or idea in a few sentences. You’ll get a read on which of the 118 elements it already contains, which ones would strengthen it most, and, for any element you tap, concrete suggestions for building it in.</p>
+
+<div class="form">
+  <textarea id="desc" maxlength="2500" placeholder="Example: A neighborhood tool library in a small city. Members pay $30 a year, borrow tools, and volunteer a few hours a month. We have a Facebook group and a board of five. We want to become more of a civic hub."></textarea>
+  <div class="row">
+    <button class="btn" id="go">Analyze</button>
+    <button class="ghost" id="example">Try an example</button>
+    <span class="count" id="count">0 / 2500</span>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="status" id="status"></div>
+</div>
+
+<div class="results" id="results">
+  <div class="read" id="read"><b>The read</b><span id="readtext"></span></div>
+  <div class="key"><span><i class="s"></i>Strong match</span><span><i class="p"></i>Partial</span><span><i class="g"></i>Suggested addition</span><span>Tap any element, matched or not, for suggestions.</span></div>
+  <div class="scroller"><div class="table" id="table"></div></div>
+  <div class="lists">
+    <div><h3>Already present</h3><div id="matches"></div></div>
+    <div><h3>Would strengthen it most</h3><div id="gaps"></div></div>
+  </div>
+  <p class="hint">This is a model’s reading of your description, not a verdict. It is as good as the description and will miss things you didn’t mention.</p>
+</div>
+</div>
+
+<div class="panel" id="panel" role="dialog" aria-labelledby="ptitle">
+  <button class="close" id="close" aria-label="Close">×</button>
+  <div class="panel-in">
+    <div class="bigtile" id="bigtile"><span class="z" id="pz"></span><span class="sym" id="psym"></span></div>
+    <div>
+      <h2 id="ptitle"></h2>
+      <div class="fam" id="pfam"></div>
+      <p id="pdesc"></p>
+      <div id="pbody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FAM={info:["Information & Learning","var(--f-info)"],delib:["Deliberation & Discourse","var(--f-delib)"],elect:["Electoral Participation","var(--f-elect)"],direct:["Direct Action & Dissent","var(--f-direct)"],acct:["Accountability & Oversight","var(--f-acct)"],org:["Organizing & Association","var(--f-org)"],adv:["Advocacy & Influence","var(--f-adv)"],gov:["Governing & Public Service","var(--f-gov)"],econ:["Economic & Everyday Democracy","var(--f-econ)"]};
+const PERIODS=["Spark","Awareness","Voice","Participation","Collective action","Power","Institutions"];
+let els=[],current=null,lastDesc='';
+const $=id=>document.getElementById(id);
+
+fetch('/elements.json').then(r=>r.json()).then(d=>{els=d;buildTable();});
+
+function buildTable(){
+  const t=$('table');t.innerHTML='';
+  PERIODS.forEach((p,i)=>{const l=document.createElement('div');l.className='plabel';l.style.gridRow=i+1;l.textContent=p;t.appendChild(l);});
+  [["Governing",9],["Economic",10]].forEach(([p,r])=>{const l=document.createElement('div');l.className='plabel';l.style.gridRow=r;l.textContent=p;t.appendChild(l);});
+  els.forEach(e=>{const b=document.createElement('button');b.className='tile';b.style.setProperty('--c',FAM[e.f][1]);b.style.gridRow=e.r;b.style.gridColumn=e.c+1;b.dataset.z=e.z;b.title=e.n;
+    b.innerHTML=`<span class="z">${e.z}</span><span class="sym">${e.s}</span><span class="nm">${e.n}</span>`;b.onclick=()=>suggest(e.z);t.appendChild(b);});
+}
+
+$('desc').addEventListener('input',()=>{$('count').textContent=$('desc').value.length+' / 2500';});
+$('example').onclick=()=>{$('desc').value=$('desc').placeholder.replace(/^Example: /,'');$('desc').dispatchEvent(new Event('input'));};
+
+$('go').onclick=async()=>{
+  const desc=$('desc').value.trim();$('err').textContent='';
+  if(desc.length<20){$('err').textContent='Give it a little more to work with, a few sentences at least.';return;}
+  $('go').disabled=true;$('status').innerHTML='<span class="spin"></span>Reading your initiative against all 118 elements…';
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'match',description:desc})});
+    const data=await r.json();
+    if(!r.ok||data.error)throw new Error(data.error||'Something went wrong.');
+    lastDesc=desc;render(data);
+  }catch(e){$('err').textContent=e.message;}
+  $('go').disabled=false;$('status').textContent='';
+};
+
+function render(data){
+  document.querySelectorAll('.tile').forEach(t=>t.classList.remove('strong','partial','gap','sel'));
+  $('readtext').textContent=data.read||'';
+  const m=$('matches'),g=$('gaps');m.innerHTML='';g.innerHTML='';
+  (data.matches||[]).forEach(x=>{const e=els.find(q=>q.z==x.z);if(!e)return;document.querySelector(`.tile[data-z="${e.z}"]`).classList.add(x.strength==='strong'?'strong':'partial');m.appendChild(item(e,x.why,x.strength));});
+  (data.gaps||[]).forEach(x=>{const e=els.find(q=>q.z==x.z);if(!e)return;document.querySelector(`.tile[data-z="${e.z}"]`).classList.add('gap');g.appendChild(item(e,x.why,'add'));});
+  if(!m.children.length)m.innerHTML='<p class="hint">Nothing clearly matched. Try describing what people actually do in it.</p>';
+  $('results').classList.add('on');$('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function item(e,why,tag){const b=document.createElement('button');b.className='item';b.style.setProperty('--c',FAM[e.f][1]);
+  const t=tag==='add'?'suggested':tag;b.innerHTML=`<span class="s">${e.s}</span><span><span class="n">${e.n}<span class="tag">${t}</span></span><span class="w">${why||''}</span></span>`;b.onclick=()=>suggest(e.z);return b;}
+
+async function suggest(z){
+  const e=els.find(q=>q.z===z);if(!e)return;current=z;
+  document.querySelectorAll('.tile.sel').forEach(t=>t.classList.remove('sel'));document.querySelector(`.tile[data-z="${z}"]`).classList.add('sel');
+  $('bigtile').style.setProperty('--c',FAM[e.f][1]);$('pz').textContent=e.z;$('psym').textContent=e.s;$('ptitle').textContent=e.n;
+  $('pfam').textContent=FAM[e.f][0];$('pfam').style.color=FAM[e.f][1];$('pdesc').textContent=e.d;
+  $('panel').classList.add('open');
+  if(!lastDesc){$('pbody').innerHTML='<p class="warn">Analyze an initiative first and suggestions for adding this element will appear here.</p>';return;}
+  $('pbody').innerHTML='<p class="warn"><span class="spin"></span>Working out how your initiative could add this…</p>';
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'suggest',description:lastDesc,element:z})});
+    const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||'Something went wrong.');
+    if(current!==z)return;
+    $('pbody').innerHTML=`<p><b>${esc(d.summary||'')}</b></p><ul class="sug">${(d.suggestions||[]).map(s=>`<li><span class="t">${esc(s.title)}</span><span class="e">${esc(s.effort||'')} effort</span><div class="h">${esc(s.how)}</div><div class="f"><b>First step:</b> ${esc(s.first_step)}</div></li>`).join('')}</ul>${d.watch_out?`<p class="warn"><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}`;
+  }catch(err){$('pbody').innerHTML=`<p class="warn">${esc(err.message)}</p>`;}
+}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+$('close').onclick=()=>{$('panel').classList.remove('open');document.querySelectorAll('.tile.sel').forEach(t=>t.classList.remove('sel'));};
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')$('close').click();});
+</script>
+</body>
+</html>

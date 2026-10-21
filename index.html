@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Democracy Table — The Periodic Table of Democratic Engagement</title>
+<meta name="description" content="118 ways to take part in self-government, arranged like the elements. Families of participation across, depth of engagement down, with the tools that help and how much AI can take on.">
+<meta property="og:title" content="The Periodic Table of Democratic Engagement">
+<meta property="og:description" content="118 ways to take part in self-government, arranged like the elements.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://democracytable.com/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#EDF0F4; --surface:#FFFFFF; --ink:#1C2430; --ink-2:#4B5665; --ink-3:#7A8594;
+  --line:#CBD2DB; --accent:#1C2430;
+  --f-info:#2F67D1; --f-delib:#1F968A; --f-elect:#6E4FD1; --f-direct:#D13F3F; --f-acct:#B8800F;
+  --f-org:#2E9348; --f-adv:#D4712A; --f-gov:#3E5F96; --f-econ:#B2407F;
+  --tint:14%;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#141A22; --surface:#1E2631; --ink:#EEF1F5; --ink-2:#B6BFCB; --ink-3:#7F8A98;
+    --line:#2F3A48; --accent:#EEF1F5;
+    --f-info:#6B9BFF; --f-delib:#4CC9BA; --f-elect:#A58CFF; --f-direct:#FF7A7A; --f-acct:#E9B54A;
+    --f-org:#5FD47A; --f-adv:#FFA05C; --f-gov:#8AAEE8; --f-econ:#E87AB6;
+    --tint:22%;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#141A22; --surface:#1E2631; --ink:#EEF1F5; --ink-2:#B6BFCB; --ink-3:#7F8A98;
+  --line:#2F3A48; --accent:#EEF1F5;
+  --f-info:#6B9BFF; --f-delib:#4CC9BA; --f-elect:#A58CFF; --f-direct:#FF7A7A; --f-acct:#E9B54A;
+  --f-org:#5FD47A; --f-adv:#FFA05C; --f-gov:#8AAEE8; --f-econ:#E87AB6;
+  --tint:22%;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 120px}
+
+header{margin-bottom:22px}
+h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;line-height:1.05;margin:0 0 10px;max-width:16ch}
+.lede{color:var(--ink-2);max-width:62ch;margin:0;font-size:1rem}
+.lede strong{color:var(--ink);font-weight:600}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 8px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 11px 5px 8px;font:inherit;font-size:.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.chip i{width:10px;height:10px;border-radius:2px;background:var(--c);display:inline-block}
+.chip[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.chip:focus-visible,.tile:focus-visible,.row-item:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.search{flex:1 1 200px;max-width:340px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;font-size:.9rem}
+.hint{color:var(--ink-3);font-size:.8rem}
+
+/* table */
+.scroller{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.table{display:grid;grid-template-columns:72px repeat(18,minmax(54px,1fr));grid-template-rows:repeat(7,auto) 16px repeat(2,auto);gap:4px;min-width:1130px}
+.plabel{grid-column:1;align-self:stretch;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:var(--ink-3);font-size:.72rem;line-height:1.15;text-align:right}
+.tile{position:relative;border:0;border-radius:4px;padding:5px 5px 4px;min-height:58px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);background:color-mix(in srgb,var(--c) var(--tint),var(--surface));box-shadow:inset 0 -3px 0 var(--c);transition:transform .12s ease,opacity .2s ease}
+.tile:hover{transform:translateY(-2px)}
+.tile .z{position:absolute;top:4px;left:5px;font-size:.6rem;color:var(--ink-3)}
+.tile .sym{display:block;margin-top:10px;font-weight:800;font-size:1.15rem;letter-spacing:-0.01em;color:var(--c);line-height:1}
+.tile .nm{display:block;font-size:.58rem;line-height:1.1;color:var(--ink-2);margin-top:3px;max-height:2.2em;overflow:hidden}
+.tile .ai{position:absolute;top:4px;right:5px;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-3);background:transparent;opacity:0;transition:opacity .15s}
+.tile .ai.l1{background:linear-gradient(90deg,var(--ink-3) 50%,transparent 50%)}
+.tile .ai.l2{background:var(--ink-3);border-color:var(--ink-3)}
+.ai-on .tile .ai{opacity:1}
+.ai-legend{display:none;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}
+.ai-on .ai-legend{display:flex}
+.ai-legend .lab{font-size:.82rem;color:var(--ink-2);margin-right:4px}
+.ai-legend .chip i{border-radius:50%;border:1.5px solid var(--ink-3);background:transparent;width:9px;height:9px}
+.ai-legend .chip i.l1{background:linear-gradient(90deg,var(--ink-3) 50%,transparent 50%)}
+.ai-legend .chip i.l2{background:var(--ink-3)}
+.ai-legend .chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.toggle{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel .ai-line{display:flex;gap:8px;align-items:center;font-size:.9rem;color:var(--ink-2);margin:0 0 8px}
+.panel .ai-line i{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink-3);display:inline-block;flex:none}
+.panel .ai-line i.l1{background:linear-gradient(90deg,var(--ink-3) 50%,transparent 50%)}
+.panel .ai-line i.l2{background:var(--ink-3)}
+.panel .ai-line b{color:var(--ink);font-weight:600}
+.row-item .ai{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-3);flex:none;align-self:center;opacity:0}
+.row-item .ai.l1{background:linear-gradient(90deg,var(--ink-3) 50%,transparent 50%)}
+.row-item .ai.l2{background:var(--ink-3)}
+.ai-on .row-item .ai{opacity:1}
+.tile.dim{opacity:.18}
+.tile.active{box-shadow:inset 0 -3px 0 var(--c),0 0 0 2px var(--c)}
+@media (prefers-reduced-motion:reduce){.tile{transition:none}.tile:hover{transform:none}.panel{transition:none}}
+
+/* detail panel */
+.panel{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -8px 30px rgba(0,0,0,.12);transform:translateY(105%);transition:transform .22s ease;z-index:20;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:70vh;overflow:auto}
+.panel.open{transform:none}
+.panel-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.bigtile{width:84px;height:84px;border-radius:6px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface));box-shadow:inset 0 -4px 0 var(--c);position:relative;flex:none}
+.bigtile .z{position:absolute;top:6px;left:8px;font-size:.7rem;color:var(--ink-3)}
+.bigtile .sym{position:absolute;left:8px;bottom:10px;font-weight:800;font-size:2rem;color:var(--c);line-height:1}
+.panel h2{margin:0;font-size:1.25rem;font-weight:800;letter-spacing:-0.01em}
+.panel .fam{font-size:.8rem;color:var(--c);font-weight:600;margin:2px 0 8px}
+.panel p{margin:0 0 8px;color:var(--ink);max-width:70ch}
+.panel .tools{color:var(--ink-2);font-size:.9rem;max-width:70ch}
+.panel .tools b{color:var(--ink);font-weight:600}
+.close{position:absolute;top:10px;right:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:32px;height:32px;font:inherit;font-size:1rem;cursor:pointer}
+.nav{display:flex;gap:8px;margin-top:10px}
+.nav button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:5px 10px;font:inherit;font-size:.82rem;cursor:pointer}
+
+/* families list */
+.families{margin-top:40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px 28px}
+.family h3{margin:0 0 2px;font-size:1.05rem;font-weight:800;color:var(--c);letter-spacing:-0.01em}
+.family .about{color:var(--ink-2);font-size:.85rem;margin:0 0 8px;max-width:48ch}
+.row-item{display:flex;gap:10px;align-items:baseline;width:100%;border:0;background:none;color:var(--ink);font:inherit;text-align:left;padding:5px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.row-item:last-child{border-bottom:0}
+.row-item .s{font-weight:800;color:var(--c);min-width:2.2em;font-size:.9rem}
+.row-item .n{flex:1;font-size:.92rem}
+.row-item .d{color:var(--ink-3);font-size:.78rem}
+.readme{margin-top:36px;color:var(--ink-2);max-width:66ch;font-size:.92rem}
+.readme h3{color:var(--ink);font-size:1rem;margin:0 0 6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>The Periodic Table of Democratic Engagement</h1>
+  <p class="lede">118 ways a person can take part in self-government, arranged like the elements. <strong>Columns</strong> are families of participation that share a character. <strong>Rows</strong> go from spark to institution: each step down a column asks more of you and gives you more leverage. Tap any element for what it is and the tools that help.</p>
+  <p class="lede" style="margin-top:10px"><a href="/analyze"><strong>Analyze your own initiative →</strong></a> see which elements it meets and how to add more. Or read the <a href="/sources">sources &amp; lineage</a>.</p>
+</header>
+
+<div class="legend" id="legend" role="group" aria-label="Filter by family"></div>
+<div class="controls">
+  <input class="search" id="search" type="search" placeholder="Search elements (e.g. canvass, jury, co-op)" aria-label="Search elements">
+  <button class="toggle" id="aitoggle" aria-pressed="false">Show AI impact</button>
+  <span class="hint">Swipe sideways on small screens.</span>
+</div>
+<div class="ai-legend" id="ailegend" role="group" aria-label="Filter by AI impact"><span class="lab">How much AI can take on:</span></div>
+
+<div class="scroller"><div class="table" id="table" role="grid" aria-label="Periodic table of democratic engagement"></div></div>
+
+<section class="families" id="families"></section>
+
+<section class="readme">
+  <h3>How to read it</h3>
+  <p>Rows 1–7 move from a first spark through awareness, voice, participation, collective action, power, and finally institutions you build or hold. The two detached rows at the bottom, like the lanthanides and actinides, are families large enough to need their own shelf: holding public office and serving the state, and the democracy that happens in workplaces, co-ops, and shared resources rather than at the ballot box.</p>
+  <p>The numbering is a reading order, not a ranking. A great democracy needs plenty of hydrogen. For the ladders, typologies, and theories this table borrows from, and a short reading list, see <a href="/sources">Sources &amp; lineage</a>.</p>
+  <h3>The AI overlay</h3>
+  <p>Turn on “Show AI impact” and each tile gets a dot in its top-right corner: empty means AI adds nothing because the point is a person doing it (voting, jury service, protest, holding office); half-filled means AI can draft, research, or organize but a person still has to show up or sign; filled means the output could be produced largely by AI with a person checking it (records requests, watchdogging, policy analysis, documenting meetings). The pattern is the interesting part: the filled dots cluster in the information and oversight columns, and almost nothing below row 5 is filled. Power and office still have to be held by someone.</p>
+</section>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-3);font-size:.8rem;max-width:66ch">democracytable.com · Built by Jeff Swift. Inspired by the Idealab periodic table of business functions, and standing on Sharp’s 198 Methods, Verba, Schlozman & Brady’s <em>Voice and Equality</em>, Arnstein’s Ladder, and Participedia. Placements are arguable; that is part of the point. <a href="/sources">Read about the sources and lineage →</a></footer>
+</div>
+
+<div class="panel" id="panel" role="dialog" aria-modal="false" aria-labelledby="ptitle">
+  <button class="close" id="close" aria-label="Close">×</button>
+  <div class="panel-in">
+    <div class="bigtile" id="bigtile"><span class="z" id="pz"></span><span class="sym" id="psym"></span></div>
+    <div>
+      <h2 id="ptitle"></h2>
+      <div class="fam" id="pfam"></div>
+      <p id="pdesc"></p>
+      <div class="ai-line" id="pai"></div>
+      <div class="tools"><b>Tools and on-ramps:</b> <span id="ptools"></span></div>
+      <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FAM = {
+  info:  {name:"Information & Learning", c:"var(--f-info)",  about:"Knowing what is going on and how the machinery works. Everything else is built on this."},
+  delib: {name:"Deliberation & Discourse", c:"var(--f-delib)", about:"Talking, listening, arguing, and convening so that a public can make up its mind."},
+  elect: {name:"Electoral Participation", c:"var(--f-elect)", about:"The formal contest for office, from registering to running."},
+  direct:{name:"Direct Action & Dissent", c:"var(--f-direct)", about:"Pressure applied outside normal channels, from a petition to a strike."},
+  acct:  {name:"Accountability & Oversight", c:"var(--f-acct)", about:"Watching power, correcting it, and repairing the rules themselves."},
+  org:   {name:"Organizing & Association", c:"var(--f-org)", about:"Turning individuals into groups, and groups into durable organizations."},
+  adv:   {name:"Advocacy & Influence", c:"var(--f-adv)", about:"Moving decision-makers toward a specific outcome."},
+  gov:   {name:"Governing & Public Service", c:"var(--f-gov)", about:"Taking a seat inside the state: juries, boards, offices, and civil service."},
+  econ:  {name:"Economic & Everyday Democracy", c:"var(--f-econ)", about:"Self-government where people actually spend their days: work, money, land, and the commons."}
+};
+const PERIODS = ["Spark","Awareness","Voice","Participation","Collective action","Power","Institutions"];
+
+// [Z, symbol, name, description, tools]
+const E = [
+[1,"Cu","Curiosity","Asking one honest question about how something public works: why is the road closed, who decides the school calendar, where does the water come from.","Your city’s website, Ballotpedia, a librarian, a neighbor who knows"],
+[2,"Tr","Trust & Verification","Checking a claim before you repeat it. The smallest unit of accountability, and the one most often skipped.","Snopes, PolitiFact, AP Fact Check, the primary source itself"],
+[3,"Nw","News Reading","Following local and national news from more than one outlet, with the local paper weighted heavily.","Local newspaper, AP, NPR, Ground News, Reuters"],
+[4,"Mt","Meeting Attendance","Sitting in on a city council, county commission, or school board meeting without any plan to speak.","Published agendas, meeting livestreams, Utah Public Notice Website (or your state’s equivalent)"],
+[5,"Cn","Conversation","Talking about public issues with family, friends, and coworkers without it going badly.","Braver Angels skills workshops, Living Room Conversations guides"],
+[6,"Op","Opinion Writing","Letters to the editor and op-eds: putting a position in public under your own name.","The OpEd Project, your paper’s letters page, LTE templates"],
+[7,"Vr","Voter Registration","Registering, and keeping the registration current after every move.","vote.gov, your state election site, same-day registration rules"],
+[8,"Rm","Voter Reminding","Making sure three people you know actually vote. Relational nudges outperform almost every ad.","Vote Tripling, Reach, a group text"],
+[9,"Pe","Petitioning","Signing or circulating a petition, from an online plea to a legally binding initiative petition.","Change.org, official initiative petitions, Resistbot"],
+[10,"Ct","Contacting Officials","Calling or writing your representative with one specific ask.","5 Calls, Resistbot, your legislature’s find-my-rep page"],
+[11,"Ml","Media Literacy","Evaluating sources, recognizing framing, and spotting manipulation before it spreads.","SIFT method, lateral reading, News Literacy Project"],
+[12,"Pr","Public Records Literacy","Reading a budget, a set of minutes, or an ordinance and understanding what it actually does.","Open-budget portals, agenda packets, municipal code libraries"],
+[13,"Ls","Listening","Seeking out people you disagree with and being able to state their view in a way they would accept.","Steelmanning, Braver Angels, Heterodox Academy"],
+[14,"Sm","Social Media Discourse","Discussing issues online in a way that informs rather than inflames.","Community norms, Bluesky and Reddit civic communities, local Facebook groups (carefully)"],
+[15,"Vo","Voting","Casting a ballot in every election, including primaries, municipal races, and bond questions.","Sample ballots, ballot tracking, mail-in voting"],
+[16,"Cs","Canvassing","Knocking doors or making calls for a candidate or cause.","MiniVAN, Reach, canvass scripts, a comfortable pair of shoes"],
+[17,"Pt","Protest & Rally","Showing up in public with others to make a demand visible.","Know-your-rights guides, permit rules, march marshals"],
+[18,"Wt","Watchdogging","Tracking votes, spending, contracts, and campaign money.","OpenSecrets, LegiScan, FollowTheMoney, GovTrack"],
+[19,"Cv","Civics Knowledge","Learning who does what: which level of government owns which problem.","iCivics, Khan Academy civics, your state legislature’s site"],
+[20,"Dl","Data Literacy","Reading polls, statistics, and public datasets without being fooled by them.","Census Bureau, data.gov, Pew Research, FiveThirtyEight-style poll aggregators"],
+[21,"Jn","Joining a Group","Becoming a member of a club, league, congregation, or association. Civic life starts with membership.","Meetup, your library’s community board, Rotary, PTA"],
+[22,"Ng","Neighboring","Knowing the people on your street by name. Block parties count.","Nextdoor, block captain programs, a shared snow shovel"],
+[23,"Vn","Volunteering","Giving regular time to an organization that serves your community.","VolunteerMatch, JustServe, United Way"],
+[24,"Mb","Membership Dues","Paying to belong. Dues-funded organizations answer to members, not donors.","Union dues, ACLU, League of Women Voters, Common Cause"],
+[25,"Ev","Event Attendance","Showing up to civic events: forums, fairs, fundraisers, town halls.","Mobilize, local calendars, Eventbrite"],
+[26,"Em","Emailing Officials","Writing to officials with a clear ask and a reason they should care.","Resistbot, Democracy.io, template letters you rewrite in your own words"],
+[27,"Sv","Surveys & Comment Periods","Responding when government formally asks for input, which it does more often than people realize.","regulations.gov, city surveys, general-plan comment periods"],
+[28,"Sg","Signature Gathering","Collecting signatures for an initiative, referendum, or candidate.","Petition circulator training, clipboard, your state’s signature rules"],
+[29,"Dn","Donating","Funding candidates and causes with money.","ActBlue, WinRed, Anedot, direct checks"],
+[30,"Sh","Storytelling","Telling your own story in public in a way that connects it to a shared problem.","Marshall Ganz’s public narrative, testimony prep workshops"],
+[31,"Pc","Public Comment","Speaking for two minutes at a public meeting.","Sign-up sheets, a written script, the clock"],
+[32,"Fo","Forums & Town Halls","Attending or hosting candidate forums and town halls.","League of Women Voters, Vote411, library meeting rooms"],
+[33,"Bl","Ballot Research","Studying every candidate and measure before you vote.","Vote411, Ballotpedia, voter information pamphlets"],
+[34,"Vd","Voter Drives","Registering other people to vote.","Rock the Vote, Vote Forward, NVRA rules"],
+[35,"Bc","Boycott & Buycott","Applying economic pressure with where you spend.","Boycott lists, Ethical Consumer, union-label guides"],
+[36,"Wb","Whistleblowing & Reporting","Reporting misconduct you have witnessed.","Inspector general hotlines, ombudsman offices, Government Accountability Project"],
+[37,"Ir","Issue Research","Going deep on a single policy question until you could brief someone on it.","CRS reports, think-tank reports, Google Scholar, state fiscal notes"],
+[38,"Hb","History & Context","Learning the history behind a current fight. Most fights are old.","Local archives, oral histories, historical society"],
+[39,"Re","Relational Organizing","The one-to-one meeting: learning what someone cares about and why.","IAF one-to-one guide, Organizing for Power training"],
+[40,"Ho","Hosting","House meetings, potlucks, living-room gatherings where people decide to act together.","House-meeting agenda, Swing Left, Indivisible guides"],
+[41,"Rt","Recruitment","Making the ask that brings someone new in.","Ladder of engagement, the hard ask, follow-up calls"],
+[42,"Tm","Team Building","Forming a committee or working group with clear roles.","Signal or Slack, role charts, meeting norms"],
+[43,"Mp","Power Mapping","Charting who decides, who influences them, and who you can move.","Power-map canvas, Beautiful Trouble, Midwest Academy"],
+[44,"Ty","Testifying","Testifying at a legislative committee hearing.","Committee calendars, testimony template, three minutes"],
+[45,"Lb","Lobbying Visits","Meeting legislators or staff in person with a one-page leave-behind.","Lobby days, one-pagers, follow-up thank-you"],
+[46,"Md","Media Relations","Pitching stories and writing press releases that reporters will use.","Press lists, Muck Rack, Help a Reporter Out"],
+[47,"Mg","Messaging & Framing","Crafting public language that moves people who are not already with you.","FrameWorks Institute, message box, message testing"],
+[48,"Dg","Digital Campaigning","Running an online advocacy campaign with real targets and real actions.","Action Network, New/Mode, Phone2Action"],
+[49,"Db","Debate & Argument","Arguing a position in a structured, public setting.","Stasis theory, Toulmin model, debate leagues"],
+[50,"Pd","Podcasting & Publishing","Producing regular civic commentary that other people rely on.","Substack, Ghost, podcast hosting, community radio"],
+[51,"Cj","Caucus & Convention Delegate","Taking part in a party’s nominating process as a delegate.","County party caucus rules, delegate training, convention calendar"],
+[52,"Cc","Campaign Volunteering","Joining a campaign team and taking a regular shift.","Mobilize, NGP VAN, campaign office"],
+[53,"St","Strike & Walkout","Withholding labor to force a decision.","Strike fund, strike committee, Labor Notes"],
+[54,"Lt","Litigation & Legal Challenge","Suing, or supporting a suit, to defend a right or stop an abuse.","ACLU, legal aid, Institute for Justice, amicus briefs"],
+[55,"Rc","Records Requests","Using FOIA or your state’s open-records law to obtain documents.","MuckRock, GRAMA (Utah), state open-records portals"],
+[56,"Te","Teaching Civics","Teaching others how democracy works: students, kids, new citizens, neighbors.","Curricula, library programs, naturalization classes"],
+[57,"Ju","Jury Service","Serving on a jury when summoned. The one form of governing most people are drafted into.","The summons, jury instructions, the oath"],
+[58,"Cb","Census & Public Surveys","Answering the census and official surveys that allocate money and seats.","census.gov, American Community Survey"],
+[59,"Ns","National & Community Service","A service year or term in a public program.","AmeriCorps, Peace Corps, state service corps"],
+[60,"Bd","Boards & Commissions","Serving on an appointed board: planning, library, parks, historic preservation.","Your city’s board application page, county appointments"],
+[61,"Pp","Party Precinct Officer","Holding a precinct chair or party officer position.","County party, precinct maps, caucus rules"],
+[62,"Nc","Neighborhood Council & HOA","Serving in the most local layer of governance there is.","HOA bylaws, neighborhood council elections"],
+[63,"Sb","School Board","Holding elected office that governs a school district.","Filing deadlines, state school boards association"],
+[64,"Mo","Municipal Office","City council or mayor.","Filing paperwork, league of cities and towns, campaign finance rules"],
+[65,"Co","County Office","Commissioner, clerk, assessor, sheriff, attorney.","County filing office, association of counties"],
+[66,"Sl","State Legislature","Serving as a state representative or senator.","Candidate filing, NCSL, legislative training"],
+[67,"Cs","Civil Service","Working inside public administration as a career.","USAJobs, state and county job boards, public-affairs degrees"],
+[68,"Jd","Judicial Service","Serving as a judge, justice of the peace, or on a judicial nominating commission.","Judicial nominating commissions, bar association"],
+[69,"Ex","Statewide Executive Office","Governor, attorney general, secretary of state, auditor, treasurer.","Statewide filing, party nomination, transition planning"],
+[70,"Fd","Federal Office & Appointments","Congress, federal appointments, and the agencies they run.","Federal filing, FEC, Senate confirmation process"],
+[71,"Dp","Diplomacy & Intergovernmental Work","Representing one government to another: compacts, councils of governments, treaties.","Councils of governments, interstate compacts, Foreign Service"],
+[72,"Ld","Leadership Development","Training other people to lead, so the work survives you.","Midwest Academy, Camp Wellstone, Organizing for Power"],
+[73,"Co","Coalition Building","Allying organizations that do not fully agree around a shared target.","Coalition charters, MOUs, steering committees"],
+[74,"Cp","Campaign Strategy","Planning an issue campaign with goals, targets, tactics, and a timeline.","Midwest Academy strategy chart, theory of change"],
+[75,"Fr","Fundraising","Raising the money that civic work runs on.","Grants, ActBlue and Anedot, membership drives, major-donor asks"],
+[76,"Pl","Policy Analysis","Taking a proposal apart and showing what it would actually do.","Fiscal notes, bill trackers, cost-benefit analysis"],
+[77,"Bd","Bill & Ordinance Drafting","Writing model legislation or a local ordinance.","Legislative counsel, model ordinances, plain-language drafting"],
+[78,"Bi","Ballot Initiative","Putting a measure on the ballot and winning it.","Ballot Initiative Strategy Center, signature math, title and summary"],
+[79,"Pa","Political Committee","Forming a PAC or political committee to pool money and influence.","FEC and state filings, treasurer, compliance software"],
+[80,"Ng","Negotiation","Bargaining with decision-makers for a specific outcome.","Getting to Yes, BATNA, written terms"],
+[81,"Fc","Facilitation","Running a deliberative conversation so a group can decide well.","NCDD, Everyday Democracy, Technology of Participation"],
+[82,"Mm","Mediation & Bridging","Resolving disputes between neighbors, groups, or factions.","Community mediation centers, restorative practices"],
+[83,"Pw","Poll Working","Serving as an election judge or poll worker.","County clerk, Help America Vote, election-judge training"],
+[84,"Cm","Campaign Management","Running a campaign: the plan, the money, the field, the compliance.","Campaign plan, NGP VAN, finance calendar, compliance filings"],
+[85,"Cd","Civil Disobedience","Principled, nonviolent lawbreaking that accepts the consequences.","Nonviolence training, legal observers, jail support, King’s Letter from Birmingham Jail"],
+[86,"Au","Audit & Ethics Oversight","Serving on an ethics commission, audit committee, or civilian review board.","Ethics commissions, civilian oversight boards, inspector general"],
+[87,"Cj","Citizen Journalism","Reporting and publishing on local public affairs when no one else does.","Documenters, Substack, community radio, Report for America"],
+[88,"Do","Documenting Government","Systematically recording what happens in public meetings so others can use it.","City Bureau Documenters, note templates, public archives"],
+[89,"Wv","Workplace Voice","Speaking up on how your workplace runs, through councils, surveys, or just a meeting.","Employee councils, open-door policies, workplace committees"],
+[90,"Ma","Mutual Aid","Organizing neighbors to meet needs directly, outside both market and state.","Mutual Aid Hub, mutual aid groups, Dean Spade’s Mutual Aid"],
+[91,"Um","Union Membership","Joining and showing up for your union.","Your local, stewards, union meetings"],
+[92,"Uo","Union Organizing","Organizing a new union where there is none.","NLRB, EWOC, Labor Notes, No Shortcuts (McAlevey)"],
+[93,"Bg","Collective Bargaining","Negotiating a contract as a group.","Bargaining committee, contract campaign, strike readiness"],
+[94,"Cp","Cooperative Membership","Belonging to a co-op or credit union and voting in it.","Credit unions, food co-ops, co-op annual meetings"],
+[95,"Cf","Founding a Cooperative","Starting a worker, consumer, or housing cooperative.","US Federation of Worker Cooperatives, Democracy at Work Institute, co-op development centers"],
+[96,"Cg","Commons Governance","Managing a shared resource by rules the users set: water, grazing land, open-source code.","Ostrom’s design principles, irrigation companies, open-source governance"],
+[97,"Pb","Participatory Budgeting","Deciding directly how a slice of public money is spent.","Participatory Budgeting Project, PB ballots, delegate assemblies"],
+[98,"Lt","Community Land Trust","Holding land democratically so housing stays affordable.","Grounded Solutions Network, CLT bylaws"],
+[99,"Pf","Public & Community Finance","Public banks, community development funds, and local investment.","Public Banking Institute, CDFIs, community investment funds"],
+[100,"Dg","Digital & Platform Governance","Governing online communities: moderation, open-source projects, member-run platforms.","Community guidelines, maintainer governance, Decidim, platform co-ops"],
+[101,"Sg","Student Government","Campus democracy: student senates, associations, and fee boards.","Student association elections, student trustees"],
+[102,"Ed","Regional Development Councils","Shaping local economic policy through development boards and planning councils.","Economic development corporations, regional planning councils"],
+[103,"Ep","Economic Democracy Policy","Winning laws that make worker ownership, co-ops, and commons easier to build.","Employee ownership legislation, co-op statutes, Main Street Employee Ownership Act"],
+[104,"Fo","Founding an Organization","Starting a nonprofit or association with a mission and members.","501(c)(3) and 501(c)(4), bylaws, fiscal sponsors"],
+[105,"Gv","Organizational Governance","Serving on and running a board well.","Robert’s Rules, board training, BoardSource"],
+[106,"Ib","Institution Building","Building civic infrastructure that outlasts any campaign: foundations, hubs, endowments.","Community foundations, endowments, shared office space"],
+[107,"Nt","Network Weaving","Connecting organizations across regions and issues into something that can act together.","Network mapping, federations, state tables"],
+[108,"Tk","Policy Research Institute","Producing the research and white papers policymakers actually cite.","White papers, peer review, policy fellowships"],
+[109,"La","Legal Advocacy","Impact litigation and amicus work that changes the law for everyone.","Public-interest law firms, law school clinics"],
+[110,"Mc","Multi-State Campaigns","Leading advocacy that moves many legislatures at once.","State policy networks, model bills, shared campaigns"],
+[111,"Rg","Regulatory Participation","Engaging formally in rulemaking, where much of policy is actually made.","regulations.gov, administrative procedure, comment coalitions"],
+[112,"Ia","International Advocacy","Working through treaties, UN bodies, and cross-border networks.","ECOSOC consultative status, human-rights mechanisms, transnational coalitions"],
+[113,"Ca","Citizens’ Assembly","Convening a randomly selected body of residents to deliberate and recommend.","Healthy Democracy, newDemocracy Foundation, sortition"],
+[114,"Pp","Participatory Planning","Co-designing plans and budgets with residents rather than for them.","Participatory budgeting, Decidim, charrettes"],
+[115,"Ea","Election Administration","Serving on an election board, canvass, or audit team.","Election Assistance Commission, risk-limiting audits, canvassing boards"],
+[116,"Ro","Running for Office","Being the candidate.","Run for Something, She Should Run, filing deadlines, your first fifty calls"],
+[117,"Mv","Movement Building","Sustaining a social movement across many campaigns and years.","Momentum, Beautiful Trouble, movement schools"],
+[118,"Cr","Constitutional Reform","Changing the rules of the game itself: amendments, conventions, electoral reform.","Initiative process, ranked-choice campaigns, fair-maps commissions, constitutional conventions"]
+];
+
+// AI impact: 0 = none (the point is a human doing it), 1 = can help, 2 = can do it alone
+const AI_LEVELS=[
+  {name:"None",note:"The value is in a person doing it. AI can at most remind you."},
+  {name:"Can help",note:"AI can draft, research, organize, or rehearse, but a person has to show up, decide, or sign."},
+  {name:"Can do it alone",note:"The output could be produced largely by AI, with a person checking it. Whether it should be is a separate question."}
+];
+const AI={1:1,2:2,3:1,4:0,5:0,6:1,7:1,8:1,9:1,10:1,11:1,12:2,13:0,14:1,15:0,16:1,17:0,18:2,19:1,20:2,21:0,22:0,23:0,24:0,25:0,26:1,27:1,28:0,29:0,30:1,31:1,32:0,33:2,34:0,35:1,36:0,37:2,38:2,39:0,40:0,41:1,42:1,43:2,44:1,45:1,46:2,47:1,48:2,49:1,50:1,51:0,52:0,53:0,54:1,55:2,56:1,57:0,58:1,59:0,60:0,61:0,62:0,63:0,64:0,65:0,66:0,67:1,68:0,69:0,70:0,71:0,72:1,73:0,74:1,75:1,76:2,77:2,78:1,79:1,80:1,81:1,82:0,83:0,84:1,85:0,86:1,87:1,88:2,89:0,90:1,91:0,92:0,93:1,94:0,95:1,96:1,97:1,98:1,99:1,100:2,101:0,102:1,103:1,104:1,105:1,106:0,107:1,108:2,109:1,110:1,111:2,112:1,113:1,114:1,115:0,116:0,117:0,118:1};
+
+function pos(z){
+  if(z===1)return[1,1]; if(z===2)return[1,18];
+  if(z<=10)return[2,z<=4?z-2:z+8];
+  if(z<=18)return[3,z<=12?z-10:z];
+  if(z<=36)return[4,z-18];
+  if(z<=54)return[5,z-36];
+  if(z<=56)return[6,z-54];
+  if(z<=71)return[9,z-54];
+  if(z<=86)return[6,z-68];
+  if(z<=88)return[7,z-86];
+  if(z<=103)return[10,z-86];
+  return[7,z-100];
+}
+function fam(r,c){
+  if(r===9)return"gov"; if(r===10)return"econ";
+  if(c<=2)return"info"; if(c===18)return"acct"; if(c===17)return"direct";
+  if(c<=7)return"org"; if(c<=12)return"adv"; if(c<=14)return"delib"; return"elect";
+}
+const els = E.map(([z,s,n,d,t])=>{const[r,c]=pos(z);return{z,s,n,d,t,r,c,f:fam(r,c),ai:AI[z]??0};});
+
+// build legend
+const legend=document.getElementById('legend');
+let activeFam=null;
+Object.entries(FAM).forEach(([k,v])=>{
+  const b=document.createElement('button');b.className='chip';b.style.setProperty('--c',v.c);b.setAttribute('aria-pressed','false');
+  b.innerHTML='<i></i>'+v.name;
+  b.onclick=()=>{activeFam=activeFam===k?null:k;render();};
+  legend.appendChild(b);
+});
+
+// AI legend + toggle
+let aiOn=false,activeAI=null;
+const aitoggle=document.getElementById('aitoggle');
+aitoggle.onclick=()=>{aiOn=!aiOn;aitoggle.setAttribute('aria-pressed',String(aiOn));aitoggle.textContent=aiOn?'Hide AI impact':'Show AI impact';document.body.classList.toggle('ai-on',aiOn);if(!aiOn){activeAI=null;}render();};
+const ailegend=document.getElementById('ailegend');
+AI_LEVELS.forEach((l,i)=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed','false');b.innerHTML=`<i class="l${i}"></i>${l.name}`;b.title=l.note;b.onclick=()=>{activeAI=activeAI===i?null:i;render();};ailegend.appendChild(b);});
+
+// build table
+const table=document.getElementById('table');
+PERIODS.forEach((p,i)=>{const l=document.createElement('div');l.className='plabel';l.style.gridRow=i+1;l.textContent=p;table.appendChild(l);});
+[["Governing",9],["Economic",10]].forEach(([p,r])=>{const l=document.createElement('div');l.className='plabel';l.style.gridRow=r;l.textContent=p;table.appendChild(l);});
+els.forEach(e=>{
+  const b=document.createElement('button');b.className='tile';b.style.setProperty('--c',FAM[e.f].c);
+  b.style.gridRow=e.r;b.style.gridColumn=e.c+1;b.dataset.z=e.z;b.title=e.n;
+  b.innerHTML=`<span class="z">${e.z}</span><span class="ai l${e.ai}" aria-hidden="true"></span><span class="sym">${e.s}</span><span class="nm">${e.n}</span>`;
+  b.onclick=()=>open(e.z);
+  table.appendChild(b);
+});
+
+// families list
+const fsec=document.getElementById('families');
+Object.entries(FAM).forEach(([k,v])=>{
+  const d=document.createElement('div');d.className='family';d.style.setProperty('--c',v.c);
+  d.innerHTML=`<h3>${v.name}</h3><p class="about">${v.about}</p>`;
+  els.filter(e=>e.f===k).sort((a,b)=>a.z-b.z).forEach(e=>{
+    const b=document.createElement('button');b.className='row-item';b.dataset.z=e.z;
+    b.innerHTML=`<span class="s">${e.s}</span><span class="n">${e.n}</span><span class="ai l${e.ai}" aria-hidden="true"></span><span class="d">${e.z}</span>`;
+    b.onclick=()=>open(e.z);d.appendChild(b);
+  });
+  fsec.appendChild(d);
+});
+
+// filter + search
+const search=document.getElementById('search');
+search.addEventListener('input',render);
+function render(){
+  const q=search.value.trim().toLowerCase();
+  document.querySelectorAll('#legend .chip').forEach((c,i)=>c.setAttribute('aria-pressed',String(Object.keys(FAM)[i]===activeFam)));
+  document.querySelectorAll('#ailegend .chip').forEach((c,i)=>c.setAttribute('aria-pressed',String(i===activeAI)));
+  els.forEach(e=>{
+    const t=table.querySelector(`.tile[data-z="${e.z}"]`);
+    const famOk=(!activeFam||e.f===activeFam)&&(!aiOn||activeAI===null||e.ai===activeAI);
+    const qOk=!q||(e.n+' '+e.d+' '+e.t+' '+e.s).toLowerCase().includes(q);
+    t.classList.toggle('dim',!(famOk&&qOk));
+    const row=fsec.querySelector(`.row-item[data-z="${e.z}"]`);
+    row.style.display=(famOk&&qOk)?'':'none';
+  });
+  document.querySelectorAll('.family').forEach(f=>{f.style.display=[...f.querySelectorAll('.row-item')].some(r=>r.style.display!=='none')?'':'none';});
+}
+
+// panel
+const panel=document.getElementById('panel');let cur=null;
+function open(z){
+  const e=els.find(x=>x.z===z);cur=z;
+  const c=FAM[e.f].c;
+  document.getElementById('bigtile').style.setProperty('--c',c);
+  document.getElementById('pz').textContent=e.z;
+  document.getElementById('psym').textContent=e.s;
+  document.getElementById('ptitle').textContent=e.n;
+  const pf=document.getElementById('pfam');pf.textContent=FAM[e.f].name+' · '+(e.r<=7?'Row '+e.r+': '+PERIODS[e.r-1]:'Detached row');pf.style.setProperty('--c',c);pf.style.color=c;
+  document.getElementById('pdesc').textContent=e.d;
+  document.getElementById('pai').innerHTML=`<i class="l${e.ai}"></i><span><b>AI impact: ${AI_LEVELS[e.ai].name}.</b> ${AI_LEVELS[e.ai].note}</span>`;
+  document.getElementById('ptools').textContent=e.t;
+  document.querySelectorAll('.tile.active').forEach(t=>t.classList.remove('active'));
+  table.querySelector(`.tile[data-z="${z}"]`).classList.add('active');
+  panel.classList.add('open');
+}
+document.getElementById('close').onclick=()=>{panel.classList.remove('open');document.querySelectorAll('.tile.active').forEach(t=>t.classList.remove('active'));};
+document.getElementById('prev').onclick=()=>open(cur>1?cur-1:118);
+document.getElementById('next').onclick=()=>open(cur<118?cur+1:1);
+document.addEventListener('keydown',ev=>{if(!panel.classList.contains('open'))return;if(ev.key==='Escape')document.getElementById('close').click();if(ev.key==='ArrowRight')document.getElementById('next').click();if(ev.key==='ArrowLeft')document.getElementById('prev').click();});
+
+// deep link
+const h=(location.hash||'').replace('#','');
+if(/^\d+$/.test(h)&&+h>=1&&+h<=118)open(+h);
+</script>
+</body>
+</html>
