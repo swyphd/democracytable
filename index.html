@@ -641,7 +641,7 @@ function render(){
     let hit=!!ini&&ini.e.includes(e.z);
     let iniOk=!ini||hit;
     let gap=false;
-    if(!ini&&own){const st=own.matches[e.z];gap=own.gaps.includes(e.z);hit=!!st;iniOk=hit||gap;if(hit)t.style.setProperty('--k',st==='strong'?'var(--ink)':'var(--ink-3)');}
+    if(!ini&&own&&iniOn){const st=own.matches[e.z];gap=own.gaps.includes(e.z);hit=!!st;iniOk=hit||gap;if(hit)t.style.setProperty('--k',st==='strong'?'var(--ink)':'var(--ink-3)');}
     else if(hit)t.style.setProperty('--k',KIND[ini.k].c);
     t.classList.toggle('dim',!(famOk&&qOk&&iniOk));
     t.classList.toggle('hit',hit&&famOk&&qOk);
