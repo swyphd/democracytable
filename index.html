@@ -124,6 +124,42 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .row-item .d{color:var(--ink-3);font-size:.78rem}
 .readme{margin-top:36px;color:var(--ink-2);max-width:66ch;font-size:.92rem}
 .readme h3{color:var(--ink);font-size:1rem;margin:0 0 6px}
+
+/* Initiatives overlay */
+.ini{margin:0 0 14px;padding:10px 12px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.ini[hidden]{display:none}
+.ini-head{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ini-head .lab{font-size:.82rem;color:var(--ink-2)}
+.ini-filters{display:flex;gap:4px;flex-wrap:wrap}
+.ini-filters .chip{padding:3px 9px;font-size:.75rem;gap:5px}
+.ini-filters .chip i{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.ini-filters .chip i.past{background:transparent;border:1.5px solid var(--ink-3)}
+.ini-filters .chip i.proposed{background:transparent;border:1.5px dashed var(--ink-3)}
+.ini-filters .chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.ini-strip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.ichip{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:5px 11px 5px 9px;font:inherit;font-size:.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.ichip i{width:8px;height:8px;border-radius:50%;background:var(--k);display:inline-block;flex:none}
+.ichip.past i{background:transparent;border:1.5px solid var(--k)}
+.ichip.proposed i{background:transparent;border:1.5px dashed var(--k)}
+.ichip .yr{color:var(--ink-3);font-size:.7rem}
+.ichip[aria-pressed="true"]{border-color:var(--k);box-shadow:inset 0 0 0 1px var(--k);background:color-mix(in srgb,var(--k) 12%,var(--surface))}
+.ichip[hidden]{display:none}
+.ini-caption{margin-top:6px;padding-top:8px;border-top:1px solid var(--line);font-size:.88rem;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:6px 16px;align-items:flex-start;justify-content:space-between}
+.ini-caption[hidden]{display:none}
+.ini-caption .txt{flex:1 1 320px;max-width:76ch}
+.ini-caption .k{display:block;font-size:.72rem;color:var(--k);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.ini-caption b{color:var(--ink);font-weight:700}
+.ini-caption .acts{display:flex;gap:6px;align-items:center;flex:none}
+.ini-caption .acts a,.ini-caption .acts button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:4px 9px;font:inherit;font-size:.78rem;cursor:pointer;text-decoration:none;white-space:nowrap}
+.ini-empty{font-size:.82rem;color:var(--ink-3);padding:4px 0}
+.tile.hit{box-shadow:inset 0 -3px 0 var(--c),0 0 0 2px var(--k)}
+.tile.hit::after{content:"";position:absolute;right:5px;bottom:5px;width:7px;height:7px;border-radius:50%;background:var(--k)}
+.panel .ini-line{margin-top:8px;color:var(--ink-2);font-size:.9rem;max-width:70ch}
+.panel .ini-line b{color:var(--ink);font-weight:600}
+.panel .ini-line .ichip{font-size:.75rem;padding:3px 9px 3px 7px;margin:4px 4px 0 0}
+.legend-kinds{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0 0;font-size:.72rem;color:var(--ink-3)}
+.legend-kinds span{display:inline-flex;align-items:center;gap:4px}
+.legend-kinds i{width:8px;height:8px;border-radius:50%;background:var(--k);display:inline-block}
 </style>
 </head>
 <body>
@@ -138,9 +174,20 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 <div class="controls">
   <input class="search" id="search" type="search" placeholder="Search elements (e.g. canvass, jury, co-op)" aria-label="Search elements">
   <button class="toggle" id="aitoggle" aria-pressed="false">Show AI impact</button>
+  <button class="toggle" id="initoggle" aria-pressed="false">Show initiatives</button>
   <span class="hint">Swipe sideways on small screens.</span>
 </div>
 <div class="ai-legend" id="ailegend" role="group" aria-label="Filter by AI impact"><span class="lab">How much AI can take on:</span></div>
+
+<div class="ini" id="ini" hidden>
+  <div class="ini-head">
+    <span class="lab">Real initiatives, past and present, mapped to the elements they use. Tap one to light up its elements.</span>
+    <div class="ini-filters" id="inifilters" role="group" aria-label="Filter initiatives by status"></div>
+  </div>
+  <div class="ini-strip" id="inistrip" role="group" aria-label="Initiatives"></div>
+  <div class="legend-kinds" id="inikinds"></div>
+  <div class="ini-caption" id="inicaption" hidden></div>
+</div>
 
 <div class="scroller"><div class="table" id="table" role="grid" aria-label="Periodic table of democratic engagement"></div></div>
 
@@ -152,6 +199,8 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <p>The numbering is a reading order, not a ranking. A great democracy needs plenty of hydrogen. For the ladders, typologies, and theories this table borrows from, and a short reading list, see <a href="/sources">Sources &amp; lineage</a>.</p>
   <h3>The AI overlay</h3>
   <p>Turn on “Show AI impact” and each tile gets a dot in its top-right corner: empty means AI adds nothing because the point is a person doing it (voting, jury service, protest, holding office); half-filled means AI can draft, research, or organize but a person still has to show up or sign; filled means the output could be produced largely by AI with a person checking it (records requests, watchdogging, policy analysis, documenting meetings). The pattern is the interesting part: the filled dots cluster in the information and oversight columns, and almost nothing below row 5 is filled. Power and office still have to be held by someone.</p>
+  <h3>The initiatives overlay</h3>
+  <p>Turn on “Show initiatives” for a strip of real American civic projects, movements, platforms, and government programs, from the League of Women Voters to America.gov. Tap one and the table dims to the elements it actually uses. The point is to make comparisons visible: Occupy and the Tea Party light up neighboring tiles in Direct Action but diverge at the Electoral column; DOGE and participatory budgeting both touch oversight and spending with opposite theories of who should hold the pen. A filled dot is a live effort, an empty ring is a past one, and a dashed ring is a proposal. Each element’s detail panel also lists who has tried it. The mappings are a starting set and arguable; corrections and additions are welcome.</p>
 </section>
 <footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-3);font-size:.8rem;max-width:66ch">democracytable.com · Built by Jeff Swift. Inspired by the Idealab periodic table of business functions, and standing on Sharp’s 198 Methods, Verba, Schlozman & Brady’s <em>Voice and Equality</em>, Arnstein’s Ladder, and Participedia. Placements are arguable; that is part of the point. <a href="/sources">Read about the sources and lineage →</a></footer>
 </div>
@@ -166,6 +215,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
       <p id="pdesc"></p>
       <div class="ai-line" id="pai"></div>
       <div class="tools"><b>Tools and on-ramps:</b> <span id="ptools"></span></div>
+      <div class="ini-line" id="pini" hidden></div>
       <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
     </div>
   </div>
@@ -315,6 +365,90 @@ const AI_LEVELS=[
 ];
 const AI={1:1,2:2,3:1,4:0,5:0,6:1,7:1,8:1,9:1,10:1,11:1,12:2,13:0,14:1,15:0,16:1,17:0,18:2,19:1,20:2,21:0,22:0,23:0,24:0,25:0,26:1,27:1,28:0,29:0,30:1,31:1,32:0,33:2,34:0,35:1,36:0,37:2,38:2,39:0,40:0,41:1,42:1,43:2,44:1,45:1,46:2,47:1,48:2,49:1,50:1,51:0,52:0,53:0,54:1,55:2,56:1,57:0,58:1,59:0,60:0,61:0,62:0,63:0,64:0,65:0,66:0,67:1,68:0,69:0,70:0,71:0,72:1,73:0,74:1,75:1,76:2,77:2,78:1,79:1,80:1,81:1,82:0,83:0,84:1,85:0,86:1,87:1,88:2,89:0,90:1,91:0,92:0,93:1,94:0,95:1,96:1,97:1,98:1,99:1,100:2,101:0,102:1,103:1,104:1,105:1,106:0,107:1,108:2,109:1,110:1,111:2,112:1,113:1,114:1,115:0,116:0,117:0,118:1};
 
+/* ---------- Initiatives overlay data ----------
+   One record per initiative. To add one, copy a line; the strip sorts itself by start year.
+   k = kind: gov (government program), tech (civic tech), delib (deliberative process),
+             mvmt (movement), org (reform / advocacy org), party (party or electoral)
+   st = active | past | proposed     e = element numbers it uses     u = link      */
+const KIND={
+  gov:  {name:"Government program", c:"var(--f-gov)"},
+  tech: {name:"Civic tech",         c:"var(--f-info)"},
+  delib:{name:"Deliberative process",c:"var(--f-delib)"},
+  mvmt: {name:"Movement",           c:"var(--f-direct)"},
+  org:  {name:"Reform org",         c:"var(--f-acct)"},
+  party:{name:"Party / electoral",  c:"var(--f-elect)"}
+};
+const STATUS={active:"Active",past:"Past",proposed:"Proposed"};
+const INI=[
+{id:"lwv",n:"League of Women Voters",k:"org",y:"1920–",st:"active",e:[32,33,34,56,24,54],d:"Century-old nonpartisan membership organization that runs candidate forums, Vote411, voter-registration drives, and voting-rights lawsuits.",u:"https://www.lwv.org"},
+{id:"common-cause",n:"Common Cause",k:"org",y:"1970–",st:"active",e:[24,18,54,78,118,110],d:"Dues-funded good-government group behind campaign-finance, redistricting, and voting-rights reforms in most states.",u:"https://www.commoncause.org"},
+{id:"nyc-community-boards",n:"NYC Community Boards",k:"gov",y:"1975–",st:"active",e:[62,60,114,31,4],d:"Fifty-nine appointed neighborhood boards that review land use, budgets, and liquor licenses before the city decides. The largest standing structure of neighborhood governance in the country.",u:"https://www.nyc.gov/site/cau/community-boards/community-boards.page"},
+{id:"nif",n:"National Issues Forums",k:"delib",y:"1981–",st:"active",e:[32,81,5,13,56],d:"Kettering-backed network of moderated community forums that deliberate on issue guides laying out three or four options with trade-offs.",u:"https://www.nifi.org"},
+{id:"opensecrets",n:"OpenSecrets",k:"org",y:"1983–",st:"active",e:[18,20,37,12],d:"Center for Responsive Politics’ database of money in federal politics, built from FEC and lobbying filings.",u:"https://www.opensecrets.org"},
+{id:"dudley-street",n:"Dudley Street / Community Land Trusts",k:"mvmt",y:"1984–",st:"active",e:[98,114,62,96,39],d:"Boston’s Dudley Street Neighborhood Initiative won eminent-domain power for a resident-controlled land trust; the model behind 300-plus community land trusts.",u:"https://www.dsni.org"},
+{id:"fairvote",n:"FairVote / Ranked-Choice Voting",k:"org",y:"1992–",st:"active",e:[118,78,76,110,15],d:"Reform organization behind the spread of ranked-choice voting, from San Francisco (2004) to Maine (2018), Alaska (2022), and dozens of cities.",u:"https://fairvote.org"},
+{id:"americorps",n:"AmeriCorps",k:"gov",y:"1993–",st:"active",e:[59,23,72,67],d:"The federal national-service program, from VISTA and City Year placements to the Public Health AmeriCorps.",u:"https://americorps.gov"},
+{id:"americaspeaks",n:"AmericaSpeaks",k:"delib",y:"1995–2014",st:"past",e:[32,81,27,114,97,113],d:"Carolyn Lukensmeyer’s 21st Century Town Meetings put thousands of residents at tables with keypads and networked laptops, from Listening to the City on the World Trade Center site (2002) to a national fiscal forum (2010). Closed in 2014.",u:"https://participedia.net/organization/americaspeaks"},
+{id:"brennan",n:"Brennan Center for Justice",k:"org",y:"1995–",st:"active",e:[108,76,54,109,18],d:"Law-and-policy institute at NYU producing the research behind voting-rights litigation and election-administration reform.",u:"https://www.brennancenter.org"},
+{id:"moveon",n:"MoveOn",k:"org",y:"1998–",st:"active",e:[9,48,29,16,17,79],d:"An online petition against impeachment that grew into a progressive advocacy, petition, and electoral organization with millions of members.",u:"https://www.moveon.org"},
+{id:"regulations-gov",n:"Regulations.gov",k:"gov",y:"2003–",st:"active",e:[111,27,26,76],d:"The federal portal for reading proposed rules and filing public comments. The venue for most citizen input on policy that actually binds.",u:"https://www.regulations.gov"},
+{id:"govtrack",n:"GovTrack",k:"tech",y:"2004–",st:"active",e:[18,37,3,19],d:"One-person project tracking bills and votes in Congress that pushed Congress to publish its own open data.",u:"https://www.govtrack.us"},
+{id:"usfwc",n:"US Federation of Worker Cooperatives",k:"org",y:"2004–",st:"active",e:[95,94,103,107,24,72],d:"National grassroots membership organization of worker co-ops; its Democracy at Work Institute does the development and policy work.",u:"https://www.usworker.coop"},
+{id:"sunlight",n:"Sunlight Foundation",k:"org",y:"2006–2020",st:"past",e:[18,20,12,100,55],d:"Open-government group that built APIs for congressional and campaign data and pushed transparency rules; wound down in 2020.",u:"https://sunlightfoundation.com"},
+{id:"ballotpedia",n:"Ballotpedia",k:"tech",y:"2007–",st:"active",e:[33,19,37,3],d:"Volunteer-built, now staff-written encyclopedia of American elections, candidates, and ballot measures.",u:"https://ballotpedia.org"},
+{id:"ca-redistricting",n:"California Citizens Redistricting Commission",k:"gov",y:"2008–",st:"active",e:[118,60,115,113,31],d:"Fourteen residents chosen by lottery from screened applicants draw the state’s districts instead of the legislature. Copied, in part, by Michigan and Colorado.",u:"https://www.wedrawthelines.ca.gov"},
+{id:"vote-org",n:"Vote.org / TurboVote",k:"tech",y:"2008–",st:"active",e:[7,8,34,15],d:"Online registration, reminders, and mail-ballot tools; Democracy Works runs TurboVote through universities and employers.",u:"https://www.vote.org"},
+{id:"cfa",n:"Code for America",k:"tech",y:"2009–",st:"active",e:[23,67,100,19,104,107],d:"Nonprofit that pairs technologists with governments, from the Brigade volunteer network to GetCalFresh and automatic record clearance.",u:"https://codeforamerica.org"},
+{id:"data-gov",n:"Data.gov & open data",k:"gov",y:"2009–",st:"active",e:[20,12,18,37],d:"Federal open-data portal and the city open-data ordinances that followed it, making budgets, contracts, and records machine-readable.",u:"https://data.gov"},
+{id:"open311",n:"Open311 / SeeClickFix",k:"tech",y:"2009–",st:"active",e:[10,26,62,22],d:"A standard way to report a pothole or a dead streetlight to city hall, and to see whether anything happened.",u:"https://www.open311.org"},
+{id:"pb-us",n:"Participatory Budgeting (US)",k:"delib",y:"2009–",st:"active",e:[97,114,15,31,42,81],d:"Residents directly decide how to spend part of a public budget. Started in Chicago’s 49th Ward; largest in New York City council districts and in schools.",u:"https://www.participatorybudgeting.org"},
+{id:"tea-party",n:"Tea Party movement",k:"mvmt",y:"2009–2016",st:"past",e:[17,40,51,61,116,29,10],d:"Decentralized conservative movement that moved from rallies to taking over precinct and party positions and primarying incumbents, then dissolved into the parties.",u:"https://en.wikipedia.org/wiki/Tea_Party_movement"},
+{id:"no-labels",n:"No Labels",k:"party",y:"2010–",st:"active",e:[73,47,79,116,29],d:"Centrist group that built the House Problem Solvers Caucus and prepared a 2024 third-party presidential ticket before standing down.",u:"https://www.nolabels.org"},
+{id:"cir",n:"Citizens’ Initiative Review",k:"delib",y:"2010–",st:"active",e:[113,33,78,81,76],d:"Oregon’s state-sanctioned panel of randomly selected voters studies a ballot measure for several days and writes a statement for the voters’ pamphlet. Piloted in Arizona, Colorado, Massachusetts, and California.",u:"https://healthydemocracy.org"},
+{id:"muckrock",n:"MuckRock",k:"tech",y:"2010–",st:"active",e:[55,18,87,12],d:"Platform for filing, tracking, and publishing public-records requests, now with over 100,000 filed.",u:"https://www.muckrock.com"},
+{id:"occupy",n:"Occupy Wall Street",k:"mvmt",y:"2011–12",st:"past",e:[17,85,40,81,90,30,14,117],d:"Encampment protest against inequality run by consensus general assemblies and the people’s mic. Its lasting products were the 99% frame, Occupy Sandy mutual aid, and a generation of organizers.",u:"https://en.wikipedia.org/wiki/Occupy_Wall_Street"},
+{id:"we-the-people",n:"We the People petitions",k:"gov",y:"2011–18",st:"past",e:[9,48,10],d:"White House petition site that promised an official response at 100,000 signatures; retired in 2018.",u:"https://en.wikipedia.org/wiki/We_the_People_(petitioning_system)"},
+{id:"fight-for-15",n:"Fight for $15",k:"mvmt",y:"2012–",st:"active",e:[53,17,110,78,92,30],d:"SEIU-backed fast-food walkouts that turned a $15 minimum wage from a slogan into law in a dozen states and many cities.",u:"https://fightfor15.org"},
+{id:"polis",n:"Pol.is",k:"tech",y:"2012–",st:"active",e:[14,13,27,81,100],d:"Open-source opinion-mapping tool that clusters what a crowd agrees on. Used by Taiwan’s vTaiwan and by US cities and legislatures for consultations.",u:"https://pol.is"},
+{id:"represent-us",n:"RepresentUs",k:"org",y:"2012–",st:"active",e:[78,118,73,48,110],d:"Anti-corruption group that runs cross-partisan ballot initiatives on ranked choice, open primaries, and lobbying rules.",u:"https://represent.us"},
+{id:"tpusa",n:"Turning Point USA",k:"org",y:"2012–",st:"active",e:[101,21,41,16,25,50],d:"Conservative youth organization built on campus chapters, speaker events, and turnout operations.",u:"https://www.tpusa.com"},
+{id:"blm",n:"Black Lives Matter",k:"mvmt",y:"2013–",st:"active",e:[17,14,85,117,104,90,47],d:"Decentralized movement against police violence that moved from a hashtag to the largest protests in US history in 2020 and into policy campaigns on policing.",u:"https://blacklivesmatter.com"},
+{id:"convention-of-states",n:"Convention of States",k:"mvmt",y:"2013–",st:"active",e:[118,66,110,9,40],d:"Campaign for an Article V convention to limit federal power, organized precinct by precinct; resolutions passed in 19 state legislatures.",u:"https://conventionofstates.com"},
+{id:"usds",n:"U.S. Digital Service",k:"gov",y:"2014–25",st:"past",e:[67,100,19],d:"Obama-era tech team placed inside agencies to fix public-facing services after healthcare.gov; renamed the U.S. DOGE Service in January 2025.",u:"https://en.wikipedia.org/wiki/United_States_Digital_Service"},
+{id:"18f",n:"18F",k:"gov",y:"2014–25",st:"past",e:[67,100,12],d:"GSA’s in-house digital consultancy that built open-source tools like login.gov and cloud.gov; eliminated in March 2025.",u:"https://en.wikipedia.org/wiki/18F"},
+{id:"unite-america",n:"Unite America",k:"org",y:"2014–",st:"active",e:[78,118,29,110,108],d:"Philanthropic fund that bankrolls ballot measures for open primaries and ranked-choice voting.",u:"https://www.uniteamerica.org"},
+{id:"platform-coops",n:"Platform Cooperativism Consortium",k:"org",y:"2015–",st:"active",e:[100,95,96,103],d:"Network advancing member-owned alternatives to gig and social platforms, from driver co-ops to federated social media.",u:"https://platform.coop"},
+{id:"braver-angels",n:"Braver Angels",k:"delib",y:"2016–",st:"active",e:[5,13,82,32,21,49],d:"Red/blue depolarization workshops and debates built on marriage-counseling methods, run by local alliances.",u:"https://braverangels.org"},
+{id:"indivisible",n:"Indivisible",k:"mvmt",y:"2016–",st:"active",e:[40,10,32,16,41,117,61],d:"Local groups that grew from a Google Doc on pressuring members of Congress at town halls; thousands of chapters.",u:"https://indivisible.org"},
+{id:"resistbot",n:"Resistbot",k:"tech",y:"2017–",st:"active",e:[10,26,9,48],d:"Text “resist” and a bot turns your message into a letter to your representatives; later added petitions and voter registration.",u:"https://resist.bot"},
+{id:"sunrise",n:"Sunrise Movement",k:"mvmt",y:"2017–",st:"active",e:[17,85,41,117,52,45],d:"Youth climate movement that combined sit-ins in congressional offices with electoral endorsements to push the Green New Deal.",u:"https://www.sunrisemovement.org"},
+{id:"vote-forward",n:"Vote Forward / Swing Left",k:"party",y:"2017–",st:"active",e:[16,52,8,29,40,34],d:"Volunteer letter-writing and relational turnout programs for Democratic candidates, organized through house parties and online shifts.",u:"https://votefwd.org"},
+{id:"documenters",n:"Documenters",k:"tech",y:"2018–",st:"active",e:[88,4,87,12],d:"City Bureau pays and trains residents to attend and document public meetings; now in dozens of cities.",u:"https://www.documenters.org"},
+{id:"america-in-one-room",n:"America in One Room",k:"delib",y:"2019–",st:"active",e:[113,13,5,81,32],d:"Fishkin’s deliberative poll at national scale: 500-plus voters gathered for a weekend of moderated deliberation in 2019, and again online.",u:"https://deliberation.stanford.edu"},
+{id:"covid-mutual-aid",n:"COVID mutual aid networks",k:"mvmt",y:"2020–21",st:"past",e:[90,22,42,40,23],d:"Thousands of neighborhood groups that organized groceries, rent, and medicine during the pandemic, most of which dissolved as it ended.",u:"https://www.mutualaidhub.org"},
+{id:"starbucks-workers",n:"Starbucks Workers United",k:"mvmt",y:"2021–",st:"active",e:[92,91,93,53,30,14],d:"Store-by-store union drive that organized 500-plus stores through social media and worker-to-worker organizing.",u:"https://sbworkersunited.org"},
+{id:"forward",n:"Forward Party",k:"party",y:"2022–",st:"active",e:[116,118,21,61,78],d:"Andrew Yang’s third party, built around electoral-reform planks like ranked choice and open primaries rather than a policy platform.",u:"https://www.forwardparty.com"},
+{id:"citizen-portal",n:"Citizen Portal",k:"tech",y:"2023–",st:"active",e:[4,12,18,37,55,88,10,76],d:"AI-indexed transcripts of local and state government meetings so anyone can search what was said, who said it, and what was decided.",u:"https://citizenportal.ai"},
+{id:"doge",n:"DOGE",k:"gov",y:"2025",st:"past",e:[18,86,67,70,76],d:"The Department of Government Efficiency: an executive-branch drive to cut federal spending, contracts, and staff, run through appointees and agency data access rather than public participation. Wound down in 2025 after Musk’s exit; its alumni built America.gov.",u:"https://en.wikipedia.org/wiki/Department_of_Government_Efficiency"},
+{id:"naacp",n:"NAACP",k:"org",y:"1909–",st:"active",e:[24,21,54,109,34,17,110],d:"The oldest civil-rights membership organization: local branches, litigation (Brown v. Board), voter registration, and lobbying, run on dues and chapters for over a century.",u:"https://naacp.org"},
+{id:"us-chamber",n:"Chambers of Commerce",k:"org",y:"1912–",st:"active",e:[21,24,45,102,79,29,105,111],d:"The U.S. Chamber and the thousands of local chambers beneath it: dues-paying business members, candidate endorsements, lobbying, and a seat on nearly every regional development board. The most widespread civic association in America, and one of the least examined as one.",u:"https://www.uschamber.com"},
+{id:"nlc",n:"National League of Cities",k:"org",y:"1924–",st:"active",e:[64,71,110,45,72,107],d:"Membership federation of 2,000-plus cities and the state municipal leagues; trains local officials and lobbies Washington on their behalf.",u:"https://www.nlc.org"},
+{id:"afl-cio",n:"AFL-CIO",k:"org",y:"1955–",st:"active",e:[91,107,45,79,16,110,93],d:"Federation of 60-odd unions and their state and central labor councils; the labor movement’s political and lobbying arm.",u:"https://aflcio.org"},
+{id:"alec",n:"ALEC",k:"org",y:"1973–",st:"active",e:[77,110,66,45,108,24,21],d:"The American Legislative Exchange Council: state legislators and corporate members draft model bills together at conferences, then carry them home. The template for every multi-state model-bill operation since, on both sides.",u:"https://alec.org"},
+{id:"spn",n:"State Policy Network",k:"org",y:"1992–",st:"active",e:[108,76,110,46,106],d:"Network of 60-plus free-market state think tanks that supply research, messaging, and testimony to state legislatures alongside ALEC’s bills.",u:"https://spn.org"},
+{id:"wfp",n:"Working Families Party",k:"party",y:"1998–",st:"active",e:[116,61,16,52,73,79],d:"Labor-backed progressive party that uses fusion voting in New York and runs or endorses candidates in Democratic primaries elsewhere.",u:"https://workingfamilies.org"},
+{id:"afp",n:"Americans for Prosperity",k:"org",y:"2004–",st:"active",e:[16,40,41,48,45,110,79],d:"Koch-network field organization with paid staff and volunteer chapters in most states, running door-knocking and advocacy campaigns for limited government.",u:"https://americansforprosperity.org"},
+{id:"local-progress",n:"Local Progress",k:"org",y:"2012–",st:"active",e:[64,63,77,107,72,110],d:"Network of 1,000-plus progressive local elected officials who share model ordinances and training across cities.",u:"https://localprogress.org"},
+{id:"cfa-brigade",n:"Code for America Brigades",k:"tech",y:"2012–23",st:"past",e:[23,21,100,67,22],d:"Volunteer civic-hacking chapters in 80-plus cities that built open-data tools with local governments. Code for America ended the program in 2023; many brigades continue independently.",u:"https://brigade.codeforamerica.org"},
+{id:"six",n:"State Innovation Exchange",k:"org",y:"2014–",st:"active",e:[77,110,66,72,108],d:"The progressive answer to ALEC: trains state legislators, shares model bills, and coordinates across statehouses.",u:"https://stateinnovation.org"},
+{id:"brigade-app",n:"Brigade (app)",k:"tech",y:"2015–19",st:"past",e:[14,33,8,15,10],d:"Sean Parker’s “voter network” app for declaring positions, comparing ballots with friends, and pledging votes; absorbed into Countable in 2019.",u:"https://en.wikipedia.org/wiki/Brigade_Media"},
+{id:"democracy-policy-network",n:"Democracy Policy Network",k:"org",y:"2020–",st:"active",e:[108,76,77,66,37,23],d:"Volunteer-researched open library of progressive state policy ideas, written in plain language so a first-term legislator or a local activist can pick one up and run it.",u:"https://democracypolicy.network"},
+{id:"peoples-lobby",n:"People’s Lobby",k:"tech",y:"2026–",st:"active",e:[18,43,37,9,48,113,81,76],d:"Civic platform built on the Citizen Portal record: expose who benefits and who pays in a public decision, organize assurance-contract campaigns around it, then decide through a sortition panel with AI-assisted deliberation. First built and run in Provo, Utah; the model is published in the Journal of Deliberative Democracy.",u:"https://peopleslobby.ai"},
+{id:"america-gov",n:"America.gov",k:"gov",y:"2026–",st:"active",e:[1,19,12,67,10],d:"The federal government’s AI chatbot front door, launched September 2026: ask a question, get an answer drawn from official sources, with forms and application tracking promised for 2027.",u:"https://america.gov"}
+];
+INI.sort((a,b)=>parseInt(a.y)-parseInt(b.y));
+
+
 function pos(z){
   if(z===1)return[1,1]; if(z===2)return[1,18];
   if(z<=10)return[2,z<=4?z-2:z+8];
@@ -352,6 +486,43 @@ aitoggle.onclick=()=>{aiOn=!aiOn;aitoggle.setAttribute('aria-pressed',String(aiO
 const ailegend=document.getElementById('ailegend');
 AI_LEVELS.forEach((l,i)=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed','false');b.innerHTML=`<i class="l${i}"></i>${l.name}`;b.title=l.note;b.onclick=()=>{activeAI=activeAI===i?null:i;render();};ailegend.appendChild(b);});
 
+/* ---------- Initiatives overlay ---------- */
+let iniOn=false,activeIni=null,iniStatus=null;
+const iniBox=document.getElementById('ini'),iniStrip=document.getElementById('inistrip'),iniCap=document.getElementById('inicaption'),iniFilters=document.getElementById('inifilters'),initoggle=document.getElementById('initoggle');
+const iniById=Object.fromEntries(INI.map(i=>[i.id,i]));
+Object.entries(STATUS).forEach(([k,v])=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed','false');b.dataset.st=k;b.innerHTML=`<i class="${k}"></i>${v}`;b.onclick=()=>{iniStatus=iniStatus===k?null:k;renderIni();};iniFilters.appendChild(b);});
+document.getElementById('inikinds').innerHTML=Object.values(KIND).map(k=>`<span style="--k:${k.c}"><i></i>${k.name}</span>`).join('');
+INI.forEach(i=>{
+  const b=document.createElement('button');b.className='ichip '+i.st;b.style.setProperty('--k',KIND[i.k].c);b.dataset.id=i.id;b.setAttribute('aria-pressed','false');b.title=KIND[i.k].name+' · '+STATUS[i.st];
+  b.innerHTML=`<i></i>${i.n} <span class="yr">${i.y}</span>`;
+  b.onclick=()=>selectIni(activeIni===i.id?null:i.id);
+  iniStrip.appendChild(b);
+});
+initoggle.onclick=()=>setIni(!iniOn);
+function setIni(on){
+  iniOn=on;initoggle.setAttribute('aria-pressed',String(on));initoggle.textContent=on?'Hide initiatives':'Show initiatives';
+  iniBox.hidden=!on;document.body.classList.toggle('ini-on',on);
+  if(!on){activeIni=null;}
+  renderIni();render();
+}
+function selectIni(id,scroll=true){
+  if(id&&!iniOn)setIni(true);
+  activeIni=id;renderIni();render();
+  if(id&&scroll){const chip=iniStrip.querySelector(`.ichip[data-id="${id}"]`);if(chip)chip.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}
+}
+function renderIni(){
+  iniFilters.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.st===iniStatus)));
+  let shown=0;
+  iniStrip.querySelectorAll('.ichip').forEach(c=>{const i=iniById[c.dataset.id];const ok=!iniStatus||i.st===iniStatus;c.hidden=!ok;if(ok)shown++;c.setAttribute('aria-pressed',String(c.dataset.id===activeIni));});
+  if(!activeIni){iniCap.hidden=true;iniCap.innerHTML='';return;}
+  const i=iniById[activeIni];
+  iniCap.style.setProperty('--k',KIND[i.k].c);
+  const names=i.e.map(z=>els.find(x=>x.z===z)).filter(Boolean).sort((a,b)=>a.z-b.z).map(e=>`${e.s}&thinsp;${e.n}`).join(', ');
+  iniCap.innerHTML=`<div class="txt"><span class="k">${KIND[i.k].name} · ${STATUS[i.st]} · ${i.y}</span><b>${i.n}.</b> ${i.d}<br><span style="color:var(--ink-3);font-size:.8rem">Elements: ${names}</span></div><div class="acts">${i.u?`<a href="${i.u}" target="_blank" rel="noopener">Site ↗</a>`:''}<button type="button" id="iniclear">Clear</button></div>`;
+  iniCap.hidden=false;
+  document.getElementById('iniclear').onclick=()=>selectIni(null);
+}
+
 // build table
 const table=document.getElementById('table');
 PERIODS.forEach((p,i)=>{const l=document.createElement('div');l.className='plabel';l.style.gridRow=i+1;l.textContent=p;table.appendChild(l);});
@@ -382,15 +553,20 @@ const search=document.getElementById('search');
 search.addEventListener('input',render);
 function render(){
   const q=search.value.trim().toLowerCase();
+  const ini=activeIni?iniById[activeIni]:null;
   document.querySelectorAll('#legend .chip').forEach((c,i)=>c.setAttribute('aria-pressed',String(Object.keys(FAM)[i]===activeFam)));
   document.querySelectorAll('#ailegend .chip').forEach((c,i)=>c.setAttribute('aria-pressed',String(i===activeAI)));
   els.forEach(e=>{
     const t=table.querySelector(`.tile[data-z="${e.z}"]`);
     const famOk=(!activeFam||e.f===activeFam)&&(!aiOn||activeAI===null||e.ai===activeAI);
     const qOk=!q||(e.n+' '+e.d+' '+e.t+' '+e.s).toLowerCase().includes(q);
-    t.classList.toggle('dim',!(famOk&&qOk));
+    const hit=!!ini&&ini.e.includes(e.z);
+    const iniOk=!ini||hit;
+    t.classList.toggle('dim',!(famOk&&qOk&&iniOk));
+    t.classList.toggle('hit',hit&&famOk&&qOk);
+    if(hit)t.style.setProperty('--k',KIND[ini.k].c);
     const row=fsec.querySelector(`.row-item[data-z="${e.z}"]`);
-    row.style.display=(famOk&&qOk)?'':'none';
+    row.style.display=(famOk&&qOk&&iniOk)?'':'none';
   });
   document.querySelectorAll('.family').forEach(f=>{f.style.display=[...f.querySelectorAll('.row-item')].some(r=>r.style.display!=='none')?'':'none';});
 }
@@ -408,6 +584,12 @@ function open(z){
   document.getElementById('pdesc').textContent=e.d;
   document.getElementById('pai').innerHTML=`<i class="l${e.ai}"></i><span><b>AI impact: ${AI_LEVELS[e.ai].name}.</b> ${AI_LEVELS[e.ai].note}</span>`;
   document.getElementById('ptools').textContent=e.t;
+  const pini=document.getElementById('pini');
+  const tried=INI.filter(i=>i.e.includes(z));
+  if(tried.length){
+    pini.hidden=false;pini.innerHTML='<b>Who has tried it:</b><br>';
+    tried.forEach(i=>{const b=document.createElement('button');b.className='ichip '+i.st;b.style.setProperty('--k',KIND[i.k].c);b.innerHTML=`<i></i>${i.n} <span class="yr">${i.y}</span>`;b.title=KIND[i.k].name+' · '+STATUS[i.st];b.onclick=()=>{selectIni(i.id);iniBox.scrollIntoView({block:'start',behavior:'smooth'});};pini.appendChild(b);});
+  } else {pini.hidden=true;pini.innerHTML='';}
   document.querySelectorAll('.tile.active').forEach(t=>t.classList.remove('active'));
   table.querySelector(`.tile[data-z="${z}"]`).classList.add('active');
   panel.classList.add('open');
@@ -420,6 +602,7 @@ document.addEventListener('keydown',ev=>{if(!panel.classList.contains('open'))re
 // deep link
 const h=(location.hash||'').replace('#','');
 if(/^\d+$/.test(h)&&+h>=1&&+h<=118)open(+h);
+else if(h.startsWith('ini-')&&iniById[h.slice(4)])selectIni(h.slice(4));
 </script>
 </body>
 </html>
