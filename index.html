@@ -160,6 +160,8 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .legend-kinds{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0 0;font-size:.72rem;color:var(--ink-3)}
 .legend-kinds span{display:inline-flex;align-items:center;gap:4px}
 .legend-kinds i{width:8px;height:8px;border-radius:50%;background:var(--k);display:inline-block}
+.ini-own{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-2)}
+.ini-own a{font-weight:600;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -167,7 +169,6 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 <header>
   <h1>The Periodic Table of Democratic Engagement</h1>
   <p class="lede">118 ways a person can take part in self-government, arranged like the elements. <strong>Columns</strong> are families of participation that share a character. <strong>Rows</strong> go from spark to institution: each step down a column asks more of you and gives you more leverage. Tap any element for what it is and the tools that help.</p>
-  <p class="lede" style="margin-top:10px"><a href="/analyze"><strong>Analyze your own initiative →</strong></a> see which elements it meets and how to add more. Or read the <a href="/sources">sources &amp; lineage</a>.</p>
 </header>
 
 <div class="legend" id="legend" role="group" aria-label="Filter by family"></div>
@@ -187,6 +188,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <div class="ini-strip" id="inistrip" role="group" aria-label="Initiatives"></div>
   <div class="legend-kinds" id="inikinds"></div>
   <div class="ini-caption" id="inicaption" hidden></div>
+  <div class="ini-own"><a href="/analyze">Not on the list? Analyze your own initiative →</a> <span>see which elements it meets and how to add more.</span></div>
 </div>
 
 <div class="scroller"><div class="table" id="table" role="grid" aria-label="Periodic table of democratic engagement"></div></div>
