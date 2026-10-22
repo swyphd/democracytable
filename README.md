@@ -3,11 +3,11 @@
 The Periodic Table of Democratic Engagement: 118 ways to take part in self-government, arranged like the elements.
 
 ## Pages
-- `index.html` — the table (families across, depth down, AI-impact overlay)
+- `index.html` — the table (families across, depth down, AI-impact overlay, initiatives overlay, and “What’s needed”: pick 2–5 elements to see which initiatives combine them, plus an optional AI sketch of a service that would)
 - `sources.html` — intellectual history and reading list (`/sources`)
 - `analyze.html` — describe an initiative, see which elements it meets (`/analyze`)
 - `elements.json` — the single source of truth for element data, loaded by the table, `/analyze`, and the API
-- `api/analyze.js` — Vercel serverless function that calls the Claude API
+- `api/analyze.js` — Vercel serverless function that calls the Claude API (modes: `match` and `suggest` for `/analyze`, `combine` for What’s needed)
 
 ## Deploy
 Hosted on Vercel. Pushes to `main` deploy to production automatically once the repo is linked.
