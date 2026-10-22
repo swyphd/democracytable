@@ -211,13 +211,68 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .need .idea p{margin:4px 0;color:var(--ink-2)}
 .need-on .tile.gap{outline:2px dashed var(--ink-3);outline-offset:-2px}
 .tile.pick{box-shadow:inset 0 -3px 0 var(--c),0 0 0 3px var(--ink)}
+/* Phones: table first, compact chrome */
+.morebtn,.tablebar{display:none}
+@media (max-width:700px){
+  .wrap{display:flex;flex-direction:column;padding:14px 14px 120px}
+  header{order:0;margin-bottom:8px}
+  .legend{order:1}.controls{order:2}.ai-legend{order:3}.scroller{order:4}#ini{order:5}#need{order:6}.families{order:7}.readme{order:8}footer{order:9}
+  #ini,#need{margin:12px 0 0}
+  h1{font-size:1.35rem;max-width:none;margin-bottom:4px}
+  .lede{font-size:.9rem}
+  .lede .more{display:none}
+  header.open .lede .more{display:inline}
+  .morebtn{display:inline;border:0;background:none;padding:0;font:inherit;font-size:.9rem;color:var(--ink);text-decoration:underline;cursor:pointer}
+  header.open .morebtn{display:none}
+  .legend{flex-wrap:nowrap;overflow-x:auto;margin:10px -14px 6px;padding:0 14px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .legend::-webkit-scrollbar{display:none}
+  .legend .chip{flex:none;font-size:.78rem;padding:4px 10px 4px 7px}
+  .controls{gap:6px;margin-bottom:8px}
+  .search{flex:1 1 100%;max-width:none;padding:7px 11px}
+  .controls .toggle{padding:6px 10px;font-size:.8rem}
+  .controls .hint{display:none}
+  .tablebar{order:4;display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-3);margin:2px 0 6px}
+  .zoombtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:3px 10px;font:inherit;font-size:.78rem;cursor:pointer}
+  /* fit view: whole table on one screen, symbols only */
+  .scroller:not(.zoomed){overflow:visible}
+  .scroller:not(.zoomed) .table{grid-template-columns:0 repeat(18,1fr);grid-template-rows:repeat(7,auto) 6px repeat(2,auto);gap:2px;min-width:0;margin-left:-2px}
+  .scroller:not(.zoomed) .plabel{display:none}
+  .scroller:not(.zoomed) .tile{min-height:0;aspect-ratio:1/1.2;padding:0;border-radius:2px;box-shadow:inset 0 -2px 0 var(--c);display:flex;align-items:center;justify-content:center}
+  .scroller:not(.zoomed) .tile:hover{transform:none}
+  .scroller:not(.zoomed) .tile .z,.scroller:not(.zoomed) .tile .nm{display:none}
+  .scroller:not(.zoomed) .tile .sym{margin:0;font-size:clamp(.5rem,2.6vw,.8rem);letter-spacing:-0.03em}
+  .scroller:not(.zoomed) .tile .ai{top:1px;right:1px;width:5px;height:5px;border-width:1px}
+  .scroller:not(.zoomed) .tile.hit::after{right:1px;bottom:3px;width:4px;height:4px}
+  .scroller:not(.zoomed) .tile.active{box-shadow:inset 0 -2px 0 var(--c),0 0 0 2px var(--c)}
+  .scroller:not(.zoomed) .tile.hit{box-shadow:inset 0 -2px 0 var(--c),0 0 0 1.5px var(--k)}
+  .scroller:not(.zoomed) .tile.pick{box-shadow:inset 0 -2px 0 var(--c),0 0 0 2px var(--ink)}
+  .scroller:not(.zoomed) .tile.gap{outline-width:1px;outline-offset:-1px}
+  /* zoomed view: swipe sideways, row labels stay put */
+  .scroller.zoomed{margin:0 -14px;padding:0 14px 6px 0}
+  .scroller.zoomed .table{grid-template-columns:76px repeat(18,minmax(54px,1fr));min-width:1110px}
+  .scroller.zoomed .plabel{position:sticky;left:0;z-index:2;background:var(--bg);font-size:.66rem;padding:0 6px 0 4px}
+  .families{margin-top:28px}
+  /* detail panel */
+  .panel{max-height:62vh;padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px))}
+  .panel-in{gap:12px}
+  .bigtile{width:52px;height:52px}
+  .bigtile .z{top:4px;left:6px;font-size:.6rem}
+  .bigtile .sym{left:6px;bottom:7px;font-size:1.3rem}
+  .panel h2{font-size:1.1rem;padding-right:34px}
+  .panel .fam{font-size:.75rem;margin-bottom:6px}
+  .panel p{font-size:.92rem}
+  .panel .ai-line{font-size:.85rem;align-items:flex-start}
+  .panel .ai-line i{margin-top:5px}
+  .close{top:8px;right:10px}
+  .nav{position:sticky;bottom:-14px;background:var(--surface);padding:8px 0 4px;margin-top:6px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <h1>The Periodic Table of Democratic Engagement</h1>
-  <p class="lede">118 ways a person can take part in self-government, arranged like the elements. <strong>Columns</strong> are families of participation that share a character. <strong>Rows</strong> go from spark to institution: each step down a column asks more of you and gives you more leverage. Tap any element for what it is and the tools that help.</p>
+  <p class="lede">118 ways a person can take part in self-government, arranged like the elements. <button type="button" class="morebtn" id="morebtn" aria-expanded="false">How to read it</button><span class="more"><strong>Columns</strong> are families of participation that share a character. <strong>Rows</strong> go from spark to institution: each step down a column asks more of you and gives you more leverage. Tap any element for what it is and the tools that help.</span></p>
 </header>
 
 <div class="legend" id="legend" role="group" aria-label="Filter by family"></div>
@@ -255,6 +310,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <div id="needresult"></div>
 </div>
 
+<div class="tablebar"><span>Tap a tile for details.</span><button type="button" class="zoombtn" id="zoomtoggle" aria-pressed="false">Zoom in</button></div>
 <div class="scroller"><div class="table" id="table" role="grid" aria-label="Periodic table of democratic engagement"></div></div>
 
 <section class="families" id="families"></section>
@@ -697,6 +753,10 @@ function showIdea(d){
   const how=(d.how||[]).map(x=>{const e=els.find(y=>y.z===Number(x.z));return e?`<li><b>${e.s} ${esc(e.n)}:</b> ${esc(x.role)}</li>`:'';}).join('');
   box.innerHTML=`<div class="idea"><h3>${esc(d.name)}</h3><p style="color:var(--ink)">${esc(d.pitch)}</p>${d.who?`<p><b>Who it’s for:</b> ${esc(d.who)}</p>`:''}<ul>${how}</ul>${d.first_step?`<p><b>First step:</b> ${esc(d.first_step)}</p>`:''}${d.versus?`<p><b>Compared with what exists:</b> ${esc(d.versus)}</p>`:''}${d.watch_out?`<p><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}</div>`;
 }
+
+// phones: "How to read it" expands the intro; "Zoom in" swaps the fit-to-screen table for the full-size one
+document.getElementById('morebtn').onclick=e=>{e.target.closest('header').classList.add('open');e.target.setAttribute('aria-expanded','true');};
+document.getElementById('zoomtoggle').onclick=e=>{const on=e.target.getAttribute('aria-pressed')!=='true';e.target.setAttribute('aria-pressed',String(on));e.target.textContent=on?'Zoom out':'Zoom in';document.querySelector('.scroller').classList.toggle('zoomed',on);};
 
 // build table
 const table=document.getElementById('table');
