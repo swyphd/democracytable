@@ -260,7 +260,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   </div>
 </div>
 
-<script>
+<script type="module">
 const FAM = {
   info:  {name:"Information & Learning", c:"var(--f-info)",  about:"Knowing what is going on and how the machinery works. Everything else is built on this."},
   delib: {name:"Deliberation & Discourse", c:"var(--f-delib)", about:"Talking, listening, arguing, and convening so that a public can make up its mind."},
@@ -274,127 +274,6 @@ const FAM = {
 };
 const PERIODS = ["Spark","Awareness","Voice","Participation","Collective action","Power","Institutions"];
 
-// [Z, symbol, name, description, tools]
-const E = [
-[1,"Cu","Curiosity","Asking one honest question about how something public works: why is the road closed, who decides the school calendar, where does the water come from.","Your city’s website, Ballotpedia, a librarian, a neighbor who knows"],
-[2,"Tr","Trust & Verification","Checking a claim before you repeat it. The smallest unit of accountability, and the one most often skipped.","Snopes, PolitiFact, AP Fact Check, the primary source itself"],
-[3,"Nw","News Reading","Following local and national news from more than one outlet, with the local paper weighted heavily.","Local newspaper, AP, NPR, Ground News, Reuters"],
-[4,"Mt","Meeting Attendance","Sitting in on a city council, county commission, or school board meeting without any plan to speak.","Published agendas, meeting livestreams, Utah Public Notice Website (or your state’s equivalent)"],
-[5,"Cn","Conversation","Talking about public issues with family, friends, and coworkers without it going badly.","Braver Angels skills workshops, Living Room Conversations guides"],
-[6,"Op","Opinion Writing","Letters to the editor and op-eds: putting a position in public under your own name.","The OpEd Project, your paper’s letters page, LTE templates"],
-[7,"Vr","Voter Registration","Registering, and keeping the registration current after every move.","vote.gov, your state election site, same-day registration rules"],
-[8,"Rm","Voter Reminding","Making sure three people you know actually vote. Relational nudges outperform almost every ad.","Vote Tripling, Reach, a group text"],
-[9,"Pe","Petitioning","Signing or circulating a petition, from an online plea to a legally binding initiative petition.","Change.org, official initiative petitions, Resistbot"],
-[10,"Ct","Contacting Officials","Calling or writing your representative with one specific ask.","5 Calls, Resistbot, your legislature’s find-my-rep page"],
-[11,"Ml","Media Literacy","Evaluating sources, recognizing framing, and spotting manipulation before it spreads.","SIFT method, lateral reading, News Literacy Project"],
-[12,"Pr","Public Records Literacy","Reading a budget, a set of minutes, or an ordinance and understanding what it actually does.","Open-budget portals, agenda packets, municipal code libraries"],
-[13,"Ls","Listening","Seeking out people you disagree with and being able to state their view in a way they would accept.","Steelmanning, Braver Angels, Heterodox Academy"],
-[14,"Sm","Social Media Discourse","Discussing issues online in a way that informs rather than inflames.","Community norms, Bluesky and Reddit civic communities, local Facebook groups (carefully)"],
-[15,"Vo","Voting","Casting a ballot in every election, including primaries, municipal races, and bond questions.","Sample ballots, ballot tracking, mail-in voting"],
-[16,"Cs","Canvassing","Knocking doors or making calls for a candidate or cause.","MiniVAN, Reach, canvass scripts, a comfortable pair of shoes"],
-[17,"Pt","Protest & Rally","Showing up in public with others to make a demand visible.","Know-your-rights guides, permit rules, march marshals"],
-[18,"Wt","Watchdogging","Tracking votes, spending, contracts, and campaign money.","OpenSecrets, LegiScan, FollowTheMoney, GovTrack"],
-[19,"Cv","Civics Knowledge","Learning who does what: which level of government owns which problem.","iCivics, Khan Academy civics, your state legislature’s site"],
-[20,"Dl","Data Literacy","Reading polls, statistics, and public datasets without being fooled by them.","Census Bureau, data.gov, Pew Research, FiveThirtyEight-style poll aggregators"],
-[21,"Jn","Joining a Group","Becoming a member of a club, league, congregation, or association. Civic life starts with membership.","Meetup, your library’s community board, Rotary, PTA"],
-[22,"Ng","Neighboring","Knowing the people on your street by name. Block parties count.","Nextdoor, block captain programs, a shared snow shovel"],
-[23,"Vn","Volunteering","Giving regular time to an organization that serves your community.","VolunteerMatch, JustServe, United Way"],
-[24,"Mb","Membership Dues","Paying to belong. Dues-funded organizations answer to members, not donors.","Union dues, ACLU, League of Women Voters, Common Cause"],
-[25,"Ev","Event Attendance","Showing up to civic events: forums, fairs, fundraisers, town halls.","Mobilize, local calendars, Eventbrite"],
-[26,"Em","Emailing Officials","Writing to officials with a clear ask and a reason they should care.","Resistbot, Democracy.io, template letters you rewrite in your own words"],
-[27,"Sv","Surveys & Comment Periods","Responding when government formally asks for input, which it does more often than people realize.","regulations.gov, city surveys, general-plan comment periods"],
-[28,"Sg","Signature Gathering","Collecting signatures for an initiative, referendum, or candidate.","Petition circulator training, clipboard, your state’s signature rules"],
-[29,"Dn","Donating","Funding candidates and causes with money.","ActBlue, WinRed, Anedot, direct checks"],
-[30,"Sh","Storytelling","Telling your own story in public in a way that connects it to a shared problem.","Marshall Ganz’s public narrative, testimony prep workshops"],
-[31,"Pc","Public Comment","Speaking for two minutes at a public meeting.","Sign-up sheets, a written script, the clock"],
-[32,"Fo","Forums & Town Halls","Attending or hosting candidate forums and town halls.","League of Women Voters, Vote411, library meeting rooms"],
-[33,"Bl","Ballot Research","Studying every candidate and measure before you vote.","Vote411, Ballotpedia, voter information pamphlets"],
-[34,"Vd","Voter Drives","Registering other people to vote.","Rock the Vote, Vote Forward, NVRA rules"],
-[35,"Bc","Boycott & Buycott","Applying economic pressure with where you spend.","Boycott lists, Ethical Consumer, union-label guides"],
-[36,"Wb","Whistleblowing & Reporting","Reporting misconduct you have witnessed.","Inspector general hotlines, ombudsman offices, Government Accountability Project"],
-[37,"Ir","Issue Research","Going deep on a single policy question until you could brief someone on it.","CRS reports, think-tank reports, Google Scholar, state fiscal notes"],
-[38,"Hb","History & Context","Learning the history behind a current fight. Most fights are old.","Local archives, oral histories, historical society"],
-[39,"Re","Relational Organizing","The one-to-one meeting: learning what someone cares about and why.","IAF one-to-one guide, Organizing for Power training"],
-[40,"Ho","Hosting","House meetings, potlucks, living-room gatherings where people decide to act together.","House-meeting agenda, Swing Left, Indivisible guides"],
-[41,"Rt","Recruitment","Making the ask that brings someone new in.","Ladder of engagement, the hard ask, follow-up calls"],
-[42,"Tm","Team Building","Forming a committee or working group with clear roles.","Signal or Slack, role charts, meeting norms"],
-[43,"Mp","Power Mapping","Charting who decides, who influences them, and who you can move.","Power-map canvas, Beautiful Trouble, Midwest Academy"],
-[44,"Ty","Testifying","Testifying at a legislative committee hearing.","Committee calendars, testimony template, three minutes"],
-[45,"Lb","Lobbying Visits","Meeting legislators or staff in person with a one-page leave-behind.","Lobby days, one-pagers, follow-up thank-you"],
-[46,"Md","Media Relations","Pitching stories and writing press releases that reporters will use.","Press lists, Muck Rack, Help a Reporter Out"],
-[47,"Mg","Messaging & Framing","Crafting public language that moves people who are not already with you.","FrameWorks Institute, message box, message testing"],
-[48,"Dg","Digital Campaigning","Running an online advocacy campaign with real targets and real actions.","Action Network, New/Mode, Phone2Action"],
-[49,"Db","Debate & Argument","Arguing a position in a structured, public setting.","Stasis theory, Toulmin model, debate leagues"],
-[50,"Pd","Podcasting & Publishing","Producing regular civic commentary that other people rely on.","Substack, Ghost, podcast hosting, community radio"],
-[51,"Cj","Caucus & Convention Delegate","Taking part in a party’s nominating process as a delegate.","County party caucus rules, delegate training, convention calendar"],
-[52,"Cc","Campaign Volunteering","Joining a campaign team and taking a regular shift.","Mobilize, NGP VAN, campaign office"],
-[53,"St","Strike & Walkout","Withholding labor to force a decision.","Strike fund, strike committee, Labor Notes"],
-[54,"Lt","Litigation & Legal Challenge","Suing, or supporting a suit, to defend a right or stop an abuse.","ACLU, legal aid, Institute for Justice, amicus briefs"],
-[55,"Rc","Records Requests","Using FOIA or your state’s open-records law to obtain documents.","MuckRock, GRAMA (Utah), state open-records portals"],
-[56,"Te","Teaching Civics","Teaching others how democracy works: students, kids, new citizens, neighbors.","Curricula, library programs, naturalization classes"],
-[57,"Ju","Jury Service","Serving on a jury when summoned. The one form of governing most people are drafted into.","The summons, jury instructions, the oath"],
-[58,"Cb","Census & Public Surveys","Answering the census and official surveys that allocate money and seats.","census.gov, American Community Survey"],
-[59,"Ns","National & Community Service","A service year or term in a public program.","AmeriCorps, Peace Corps, state service corps"],
-[60,"Bd","Boards & Commissions","Serving on an appointed board: planning, library, parks, historic preservation.","Your city’s board application page, county appointments"],
-[61,"Pp","Party Precinct Officer","Holding a precinct chair or party officer position.","County party, precinct maps, caucus rules"],
-[62,"Nc","Neighborhood Council & HOA","Serving in the most local layer of governance there is.","HOA bylaws, neighborhood council elections"],
-[63,"Sb","School Board","Holding elected office that governs a school district.","Filing deadlines, state school boards association"],
-[64,"Mo","Municipal Office","City council or mayor.","Filing paperwork, league of cities and towns, campaign finance rules"],
-[65,"Co","County Office","Commissioner, clerk, assessor, sheriff, attorney.","County filing office, association of counties"],
-[66,"Sl","State Legislature","Serving as a state representative or senator.","Candidate filing, NCSL, legislative training"],
-[67,"Cs","Civil Service","Working inside public administration as a career.","USAJobs, state and county job boards, public-affairs degrees"],
-[68,"Jd","Judicial Service","Serving as a judge, justice of the peace, or on a judicial nominating commission.","Judicial nominating commissions, bar association"],
-[69,"Ex","Statewide Executive Office","Governor, attorney general, secretary of state, auditor, treasurer.","Statewide filing, party nomination, transition planning"],
-[70,"Fd","Federal Office & Appointments","Congress, federal appointments, and the agencies they run.","Federal filing, FEC, Senate confirmation process"],
-[71,"Dp","Diplomacy & Intergovernmental Work","Representing one government to another: compacts, councils of governments, treaties.","Councils of governments, interstate compacts, Foreign Service"],
-[72,"Ld","Leadership Development","Training other people to lead, so the work survives you.","Midwest Academy, Camp Wellstone, Organizing for Power"],
-[73,"Co","Coalition Building","Allying organizations that do not fully agree around a shared target.","Coalition charters, MOUs, steering committees"],
-[74,"Cp","Campaign Strategy","Planning an issue campaign with goals, targets, tactics, and a timeline.","Midwest Academy strategy chart, theory of change"],
-[75,"Fr","Fundraising","Raising the money that civic work runs on.","Grants, ActBlue and Anedot, membership drives, major-donor asks"],
-[76,"Pl","Policy Analysis","Taking a proposal apart and showing what it would actually do.","Fiscal notes, bill trackers, cost-benefit analysis"],
-[77,"Bd","Bill & Ordinance Drafting","Writing model legislation or a local ordinance.","Legislative counsel, model ordinances, plain-language drafting"],
-[78,"Bi","Ballot Initiative","Putting a measure on the ballot and winning it.","Ballot Initiative Strategy Center, signature math, title and summary"],
-[79,"Pa","Political Committee","Forming a PAC or political committee to pool money and influence.","FEC and state filings, treasurer, compliance software"],
-[80,"Ng","Negotiation","Bargaining with decision-makers for a specific outcome.","Getting to Yes, BATNA, written terms"],
-[81,"Fc","Facilitation","Running a deliberative conversation so a group can decide well.","NCDD, Everyday Democracy, Technology of Participation"],
-[82,"Mm","Mediation & Bridging","Resolving disputes between neighbors, groups, or factions.","Community mediation centers, restorative practices"],
-[83,"Pw","Poll Working","Serving as an election judge or poll worker.","County clerk, Help America Vote, election-judge training"],
-[84,"Cm","Campaign Management","Running a campaign: the plan, the money, the field, the compliance.","Campaign plan, NGP VAN, finance calendar, compliance filings"],
-[85,"Cd","Civil Disobedience","Principled, nonviolent lawbreaking that accepts the consequences.","Nonviolence training, legal observers, jail support, King’s Letter from Birmingham Jail"],
-[86,"Au","Audit & Ethics Oversight","Serving on an ethics commission, audit committee, or civilian review board.","Ethics commissions, civilian oversight boards, inspector general"],
-[87,"Cj","Citizen Journalism","Reporting and publishing on local public affairs when no one else does.","Documenters, Substack, community radio, Report for America"],
-[88,"Do","Documenting Government","Systematically recording what happens in public meetings so others can use it.","City Bureau Documenters, note templates, public archives"],
-[89,"Wv","Workplace Voice","Speaking up on how your workplace runs, through councils, surveys, or just a meeting.","Employee councils, open-door policies, workplace committees"],
-[90,"Ma","Mutual Aid","Organizing neighbors to meet needs directly, outside both market and state.","Mutual Aid Hub, mutual aid groups, Dean Spade’s Mutual Aid"],
-[91,"Um","Union Membership","Joining and showing up for your union.","Your local, stewards, union meetings"],
-[92,"Uo","Union Organizing","Organizing a new union where there is none.","NLRB, EWOC, Labor Notes, No Shortcuts (McAlevey)"],
-[93,"Bg","Collective Bargaining","Negotiating a contract as a group.","Bargaining committee, contract campaign, strike readiness"],
-[94,"Cp","Cooperative Membership","Belonging to a co-op or credit union and voting in it.","Credit unions, food co-ops, co-op annual meetings"],
-[95,"Cf","Founding a Cooperative","Starting a worker, consumer, or housing cooperative.","US Federation of Worker Cooperatives, Democracy at Work Institute, co-op development centers"],
-[96,"Cg","Commons Governance","Managing a shared resource by rules the users set: water, grazing land, open-source code.","Ostrom’s design principles, irrigation companies, open-source governance"],
-[97,"Pb","Participatory Budgeting","Deciding directly how a slice of public money is spent.","Participatory Budgeting Project, PB ballots, delegate assemblies"],
-[98,"Lt","Community Land Trust","Holding land democratically so housing stays affordable.","Grounded Solutions Network, CLT bylaws"],
-[99,"Pf","Public & Community Finance","Public banks, community development funds, and local investment.","Public Banking Institute, CDFIs, community investment funds"],
-[100,"Dg","Digital & Platform Governance","Governing online communities: moderation, open-source projects, member-run platforms.","Community guidelines, maintainer governance, Decidim, platform co-ops"],
-[101,"Sg","Student Government","Campus democracy: student senates, associations, and fee boards.","Student association elections, student trustees"],
-[102,"Ed","Regional Development Councils","Shaping local economic policy through development boards and planning councils.","Economic development corporations, regional planning councils"],
-[103,"Ep","Economic Democracy Policy","Winning laws that make worker ownership, co-ops, and commons easier to build.","Employee ownership legislation, co-op statutes, Main Street Employee Ownership Act"],
-[104,"Fo","Founding an Organization","Starting a nonprofit or association with a mission and members.","501(c)(3) and 501(c)(4), bylaws, fiscal sponsors"],
-[105,"Gv","Organizational Governance","Serving on and running a board well.","Robert’s Rules, board training, BoardSource"],
-[106,"Ib","Institution Building","Building civic infrastructure that outlasts any campaign: foundations, hubs, endowments.","Community foundations, endowments, shared office space"],
-[107,"Nt","Network Weaving","Connecting organizations across regions and issues into something that can act together.","Network mapping, federations, state tables"],
-[108,"Tk","Policy Research Institute","Producing the research and white papers policymakers actually cite.","White papers, peer review, policy fellowships"],
-[109,"La","Legal Advocacy","Impact litigation and amicus work that changes the law for everyone.","Public-interest law firms, law school clinics"],
-[110,"Mc","Multi-State Campaigns","Leading advocacy that moves many legislatures at once.","State policy networks, model bills, shared campaigns"],
-[111,"Rg","Regulatory Participation","Engaging formally in rulemaking, where much of policy is actually made.","regulations.gov, administrative procedure, comment coalitions"],
-[112,"Ia","International Advocacy","Working through treaties, UN bodies, and cross-border networks.","ECOSOC consultative status, human-rights mechanisms, transnational coalitions"],
-[113,"Ca","Citizens’ Assembly","Convening a randomly selected body of residents to deliberate and recommend.","Healthy Democracy, newDemocracy Foundation, sortition"],
-[114,"Pp","Participatory Planning","Co-designing plans and budgets with residents rather than for them.","Participatory budgeting, Decidim, charrettes"],
-[115,"Ea","Election Administration","Serving on an election board, canvass, or audit team.","Election Assistance Commission, risk-limiting audits, canvassing boards"],
-[116,"Ro","Running for Office","Being the candidate.","Run for Something, She Should Run, filing deadlines, your first fifty calls"],
-[117,"Mv","Movement Building","Sustaining a social movement across many campaigns and years.","Momentum, Beautiful Trouble, movement schools"],
-[118,"Cr","Constitutional Reform","Changing the rules of the game itself: amendments, conventions, electoral reform.","Initiative process, ranked-choice campaigns, fair-maps commissions, constitutional conventions"]
-];
 
 // AI impact: 0 = none (the point is a human doing it), 1 = can help, 2 = can do it alone
 const AI_LEVELS=[
@@ -490,25 +369,8 @@ const INI=[
 INI.sort((a,b)=>parseInt(a.y)-parseInt(b.y));
 
 
-function pos(z){
-  if(z===1)return[1,1]; if(z===2)return[1,18];
-  if(z<=10)return[2,z<=4?z-2:z+8];
-  if(z<=18)return[3,z<=12?z-10:z];
-  if(z<=36)return[4,z-18];
-  if(z<=54)return[5,z-36];
-  if(z<=56)return[6,z-54];
-  if(z<=71)return[9,z-54];
-  if(z<=86)return[6,z-68];
-  if(z<=88)return[7,z-86];
-  if(z<=103)return[10,z-86];
-  return[7,z-100];
-}
-function fam(r,c){
-  if(r===9)return"gov"; if(r===10)return"econ";
-  if(c<=2)return"info"; if(c===18)return"acct"; if(c===17)return"direct";
-  if(c<=7)return"org"; if(c<=12)return"adv"; if(c<=14)return"delib"; return"elect";
-}
-const els = E.map(([z,s,n,d,t])=>{const[r,c]=pos(z);return{z,s,n,d,t,r,c,f:fam(r,c),ai:AI[z]??0};});
+// Element data lives in elements.json (z, symbol, name, description, tools, row, column, family)
+const els = (await fetch('/elements.json').then(r=>r.json())).map(e=>({...e,ai:AI[e.z]??0}));
 
 // build legend
 const legend=document.getElementById('legend');

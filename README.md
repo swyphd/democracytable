@@ -6,7 +6,7 @@ The Periodic Table of Democratic Engagement: 118 ways to take part in self-gover
 - `index.html` — the table (families across, depth down, AI-impact overlay)
 - `sources.html` — intellectual history and reading list (`/sources`)
 - `analyze.html` — describe an initiative, see which elements it meets (`/analyze`)
-- `elements.json` — the single source of truth for element data used by `/analyze` and the API
+- `elements.json` — the single source of truth for element data, loaded by the table, `/analyze`, and the API
 - `api/analyze.js` — Vercel serverless function that calls the Claude API
 
 ## Deploy
@@ -20,6 +20,8 @@ Required environment variable (Vercel → Settings → Environment Variables):
 `vercel.json` enables clean URLs (`/sources` instead of `/sources.html`).
 
 ## Editing elements
-`index.html` has its own copy of the element list in the `E` array; `elements.json` is the copy used by `/analyze`. If you change one, change the other (or regenerate `elements.json` from `index.html`).
+Edit `elements.json` only. The table (`index.html`), `/analyze`, and `api/analyze.js` all read it. Each element has `z` (number), `s` (symbol), `n` (name), `d` (description), `t` (tools), `r`/`c` (row and column in the grid), and `f` (family key, one of the keys in `FAM` in `index.html`). AI-impact ratings stay in the `AI` map in `index.html`.
 
-Run `node scripts/check-elements.js` to validate `elements.json` (118 elements, unique numbers and positions, valid families, required fields) and, while `index.html` still has its own inline `E` array, confirm the two match. The same check runs in GitHub Actions on every push to `main` and every pull request.
+Run `node scripts/check-elements.js` to validate `elements.json` (118 elements, unique numbers and positions, valid families, required fields). The same check runs in GitHub Actions on every push to `main` and every pull request.
+
+To preview locally, serve the folder over HTTP (for example `python3 -m http.server`); opening `index.html` straight from disk will not load the JSON.
