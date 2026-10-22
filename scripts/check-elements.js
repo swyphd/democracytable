@@ -106,6 +106,40 @@ if (!/const E = \[/.test(html)) {
   err(`index.html comparison failed: ${e.message}`);
 }
 
+// --- initiatives (the INI array in index.html) ---
+// "What's needed" tells people when nobody works on an element, so every
+// element must have at least MIN_INI initiatives and every reference must be real.
+
+const MIN_INI = 3;
+let iniCount = 0;
+try {
+  const m = html.match(/const INI=\[([\s\S]*?)\n\];/);
+  if (!m) throw new Error('could not find the INI array in index.html');
+  const INI = vm.runInNewContext(`[${m[1]}]`);
+  iniCount = INI.length;
+  const zs = new Set(elements.map((e) => e.z));
+  const ids = new Set();
+  const uses = new Map();
+  for (const i of INI) {
+    const who = `initiative ${JSON.stringify(i.id ?? i.n)}`;
+    if (!i.id || !i.n || !i.k || !i.y || !i.st || !i.d || !Array.isArray(i.e)) { err(`${who} is missing a field (id, n, k, y, st, d, e)`); continue; }
+    if (ids.has(i.id)) err(`duplicate initiative id ${JSON.stringify(i.id)}`);
+    ids.add(i.id);
+    if (Number.isNaN(parseInt(i.y))) err(`${who} year ${JSON.stringify(i.y)} must start with a number`);
+    if (new Set(i.e).size !== i.e.length) warn(`${who} lists an element twice`);
+    for (const z of i.e) {
+      if (!zs.has(z)) err(`${who} uses element ${z}, which does not exist`);
+      else uses.set(z, (uses.get(z) || 0) + 1);
+    }
+  }
+  for (const e of elements) {
+    const n = uses.get(e.z) || 0;
+    if (n < MIN_INI) err(`z=${e.z} ${e.n} has ${n} initiative(s); needs at least ${MIN_INI}`);
+  }
+} catch (e) {
+  err(`initiative check failed: ${e.message}`);
+}
+
 // --- report ---
 
 for (const w of warnings) console.log(`warning: ${w}`);
@@ -114,4 +148,4 @@ if (errors.length) {
   console.log(`\n${errors.length} error(s), ${warnings.length} warning(s)`);
   process.exit(1);
 }
-console.log(`elements.json OK: ${elements.length} elements${synced ? ', in sync with index.html' : ''} (${warnings.length} warning(s))`);
+console.log(`elements.json OK: ${elements.length} elements${synced ? ', in sync with index.html' : ''}; ${iniCount} initiatives, at least ${MIN_INI} per element (${warnings.length} warning(s))`);
