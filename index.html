@@ -605,7 +605,7 @@ async function sketchService(){
 function showIdea(d){
   const box=document.getElementById('needidea');if(!box)return;
   const how=(d.how||[]).map(x=>{const e=els.find(y=>y.z===Number(x.z));return e?`<li><b>${e.s} ${esc(e.n)}:</b> ${esc(x.role)}</li>`:'';}).join('');
-  box.innerHTML=`<div class="idea"><h3>${esc(d.name)}</h3><p style="color:var(--ink)">${esc(d.pitch)}</p>${d.who?`<p><b>Who it’s for:</b> ${esc(d.who)}</p>`:''}<ul>${how}</ul>${d.first_step?`<p><b>First step:</b> ${esc(d.first_step)}</p>`:''}${d.versus?`<p><b>Compared with what exists:</b> ${esc(d.versus)}</p>`:''}${d.watch_out?`<p><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}<p class="note">A model’s sketch, not a plan or an endorsement.</p></div>`;
+  box.innerHTML=`<div class="idea"><h3>${esc(d.name)}</h3><p style="color:var(--ink)">${esc(d.pitch)}</p>${d.who?`<p><b>Who it’s for:</b> ${esc(d.who)}</p>`:''}<ul>${how}</ul>${d.first_step?`<p><b>First step:</b> ${esc(d.first_step)}</p>`:''}${d.versus?`<p><b>Compared with what exists:</b> ${esc(d.versus)}</p>`:''}${d.watch_out?`<p><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}</div>`;
 }
 
 // build table
