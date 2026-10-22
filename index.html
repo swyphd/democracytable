@@ -107,8 +107,6 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .panel h2{margin:0;font-size:1.25rem;font-weight:800;letter-spacing:-0.01em}
 .panel .fam{font-size:.8rem;color:var(--c);font-weight:600;margin:2px 0 8px}
 .panel p{margin:0 0 8px;color:var(--ink);max-width:70ch}
-.panel .tools{color:var(--ink-2);font-size:.9rem;max-width:70ch}
-.panel .tools b{color:var(--ink);font-weight:600}
 .close{position:absolute;top:10px;right:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:32px;height:32px;font:inherit;font-size:1rem;cursor:pointer}
 .nav{display:flex;gap:8px;margin-top:10px}
 .nav button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:5px 10px;font:inherit;font-size:.82rem;cursor:pointer}
@@ -157,6 +155,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .panel .ini-line{margin-top:8px;color:var(--ink-2);font-size:.9rem;max-width:70ch}
 .panel .ini-line b{color:var(--ink);font-weight:600}
 .panel .ini-line .ichip{font-size:.75rem;padding:3px 9px 3px 7px;margin:4px 4px 0 0}
+.panel .ini-line .ichip.tag{cursor:default;padding-left:9px;color:var(--ink-2)}
 .legend-kinds{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0 0;font-size:.72rem;color:var(--ink-3)}
 .legend-kinds span{display:inline-flex;align-items:center;gap:4px}
 .legend-kinds i{width:8px;height:8px;border-radius:50%;background:var(--k);display:inline-block}
@@ -238,7 +237,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <h3>The AI overlay</h3>
   <p>Turn on “Show AI impact” and each tile gets a dot in its top-right corner: empty means AI adds nothing because the point is a person doing it (voting, jury service, protest, holding office); half-filled means AI can draft, research, or organize but a person still has to show up or sign; filled means the output could be produced largely by AI with a person checking it (records requests, watchdogging, policy analysis, documenting meetings). The pattern is the interesting part: the filled dots cluster in the information and oversight columns, and almost nothing below row 5 is filled. Power and office still have to be held by someone.</p>
   <h3>The initiatives overlay</h3>
-  <p>Turn on “Show initiatives” for a strip of real American civic projects, movements, platforms, and government programs, from the League of Women Voters to America.gov. Tap one and the table dims to the elements it actually uses. The point is to make comparisons visible: Occupy and the Tea Party light up neighboring tiles in Direct Action but diverge at the Electoral column; DOGE and participatory budgeting both touch oversight and spending with opposite theories of who should hold the pen. A filled dot is a live effort, an empty ring is a past one, and a dashed ring is a proposal. Each element’s detail panel also lists who has tried it. The mappings are a starting set and arguable; corrections and additions are welcome.</p>
+  <p>Turn on “Show initiatives” for a strip of real American civic projects, movements, platforms, and government programs, from the League of Women Voters to America.gov. Tap one and the table dims to the elements it actually uses. The point is to make comparisons visible: Occupy and the Tea Party light up neighboring tiles in Direct Action but diverge at the Electoral column; DOGE and participatory budgeting both touch oversight and spending with opposite theories of who should hold the pen. A filled dot is a live effort, an empty ring is a past one, and a dashed ring is a proposal. Each element’s detail panel tags the initiatives that use it alongside its tools and on-ramps. The mappings are a starting set and arguable; corrections and additions are welcome.</p>
 </section>
 <footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-3);font-size:.8rem;max-width:66ch">democracytable.com · Built by Jeff Swift. Inspired by the Idealab periodic table of business functions, and standing on Sharp’s 198 Methods, Verba, Schlozman & Brady’s <em>Voice and Equality</em>, Arnstein’s Ladder, and Participedia. Placements are arguable; that is part of the point. <a href="/sources">Read about the sources and lineage →</a></footer>
 </div>
@@ -252,8 +251,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
       <div class="fam" id="pfam"></div>
       <p id="pdesc"></p>
       <div class="ai-line" id="pai"></div>
-      <div class="tools"><b>Tools and on-ramps:</b> <span id="ptools"></span></div>
-      <div class="ini-line" id="pini" hidden></div>
+      <div class="ini-line" id="ptags"></div>
       <div class="ownsug" id="pown" hidden></div>
       <div class="nav"><button id="prev">← Previous</button><button id="next">Next →</button></div>
     </div>
@@ -520,6 +518,11 @@ function render(){
 }
 
 // panel
+// Split an element's tools string on commas outside parentheses.
+function toolList(str){const out=[];let d=0,cur='';for(const ch of str){if(ch==='(')d++;if(ch===')')d--;if(ch===','&&!d){out.push(cur.trim());cur='';}else cur+=ch;}out.push(cur.trim());return out.filter(Boolean);}
+// A tool names an initiative when it contains one of the initiative's names ("Braver Angels skills workshops", "Vote Forward / Swing Left").
+const normName=x=>x.toLowerCase().replace(/\(.*?\)/g,'').replace(/[’']/g,'').replace(/^the /,'').trim();
+function sameAs(tool,ini){const t=normName(tool);return ini.split(/\s[\/&]\s/).map(normName).some(p=>p===t||(p.length>=5&&new RegExp('(^|\\W)'+p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'s?(\\W|$)').test(t)));}
 const panel=document.getElementById('panel');let cur=null;
 function open(z){
   const e=els.find(x=>x.z===z);cur=z;
@@ -531,13 +534,10 @@ function open(z){
   const pf=document.getElementById('pfam');pf.textContent=FAM[e.f].name+' · '+(e.r<=7?'Row '+e.r+': '+PERIODS[e.r-1]:'Detached row');pf.style.setProperty('--c',c);pf.style.color=c;
   document.getElementById('pdesc').textContent=e.d;
   document.getElementById('pai').innerHTML=`<i class="l${e.ai}"></i><span><b>AI impact: ${AI_LEVELS[e.ai].name}.</b> ${AI_LEVELS[e.ai].note}</span>`;
-  document.getElementById('ptools').textContent=e.t;
-  const pini=document.getElementById('pini');
+  const ptags=document.getElementById('ptags');ptags.innerHTML='<b>Tools and initiatives:</b><br>';
   const tried=INI.filter(i=>i.e.includes(z));
-  if(tried.length){
-    pini.hidden=false;pini.innerHTML='<b>Who has tried it:</b><br>';
-    tried.forEach(i=>{const b=document.createElement('button');b.className='ichip '+i.st;b.style.setProperty('--k',KIND[i.k].c);b.innerHTML=`<i></i>${i.n} <span class="yr">${i.y}</span>`;b.title=KIND[i.k].name+' · '+STATUS[i.st];b.onclick=()=>{selectIni(i.id);iniBox.scrollIntoView({block:'start',behavior:'smooth'});};pini.appendChild(b);});
-  } else {pini.hidden=true;pini.innerHTML='';}
+  tried.forEach(i=>{const b=document.createElement('button');b.className='ichip '+i.st;b.style.setProperty('--k',KIND[i.k].c);b.innerHTML=`<i></i>${i.n} <span class="yr">${i.y}</span>`;b.title=KIND[i.k].name+' · '+STATUS[i.st];b.onclick=()=>{selectIni(i.id);iniBox.scrollIntoView({block:'start',behavior:'smooth'});};ptags.appendChild(b);});
+  toolList(e.t).filter(t=>!tried.some(i=>sameAs(t,i.n))).forEach(t=>{const sp=document.createElement('span');sp.className='ichip tag';sp.textContent=t;ptags.appendChild(sp);});
   const pown=document.getElementById('pown');
   if(own){const st=own.matches[z];pown.hidden=false;pown.innerHTML=`<p style="margin:0 0 6px;font-size:.9rem;color:var(--ink-2)"><b style="color:var(--ink)">Your initiative:</b> ${st?(st==='strong'?'already does this':'does this partly'):(own.gaps.includes(z)?'would be strengthened by this':'does not do this yet')}${own.why[z]?' — '+esc(own.why[z]):''}.</p><button type="button" id="pownbtn">${st==='strong'?'How to do it better':'How to add this'}</button>`;document.getElementById('pownbtn').onclick=()=>suggestOwn(z);}
   else{pown.hidden=true;pown.innerHTML='';}
