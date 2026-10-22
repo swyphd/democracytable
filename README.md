@@ -22,4 +22,6 @@ Required environment variable (Vercel → Settings → Environment Variables):
 ## Editing elements
 Edit `elements.json` only. The table (`index.html`), `/analyze`, and `api/analyze.js` all read it. Each element has `z` (number), `s` (symbol), `n` (name), `d` (description), `t` (tools), `r`/`c` (row and column in the grid), and `f` (family key, one of the keys in `FAM` in `index.html`). AI-impact ratings stay in the `AI` map in `index.html`.
 
+Run `node scripts/check-elements.js` to validate `elements.json` (118 elements, unique numbers and positions, valid families, required fields). The same check runs in GitHub Actions on every push to `main` and every pull request.
+
 To preview locally, serve the folder over HTTP (for example `python3 -m http.server`); opening `index.html` straight from disk will not load the JSON.
