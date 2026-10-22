@@ -19,12 +19,19 @@ module.exports = async (req, res) => {
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
   const { mode, description, element } = body || {};
   const desc = String(description || '').trim().slice(0, 2500);
-  if (!desc) return res.status(400).json({ error: 'Describe your initiative first.' });
+  if (!desc && mode !== 'combine') return res.status(400).json({ error: 'Describe your initiative first.' });
 
   const catalogue = elements.map(e => `${e.z} ${e.n} (${FAMILY[e.f].split(' ')[0]})`).join('; ');
   let system, user, maxTokens;
 
-  if (mode === 'suggest') {
+  if (mode === 'combine') {
+    const picked = [...new Set((Array.isArray(body.elements) ? body.elements : []).map(Number))].map(z => elements.find(e => e.z === z)).filter(Boolean);
+    if (picked.length < 2 || picked.length > 5) return res.status(400).json({ error: 'Pick 2 to 5 elements.' });
+    const nearby = (Array.isArray(body.nearby) ? body.nearby : []).slice(0, 8).map(s => String(s).slice(0, 300));
+    system = 'You are an experienced civic entrepreneur and democratic-design consultant. You invent concrete, realistic services that a small team, nonprofit, or local government could actually run. No platitudes, no vague platforms. Respond ONLY with valid JSON, no prose before or after.';
+    user = `Elements of democratic participation to combine:\n${picked.map(e => `${e.z}. ${e.n} (${FAMILY[e.f]}) — ${e.d} Tools: ${e.t}`).join('\n')}\n\nExisting initiatives that do all or most of these:\n${nearby.length ? nearby.join('\n') : 'None known.'}\n\nImagine one service, program, or product that would combine all of these elements in a single offering people would actually use. If existing initiatives already cover it, propose something that fills what they leave out rather than repeating them. Be specific about who runs it and who uses it.\n\nJSON shape:\n{"name":"short memorable name","pitch":"2 sentences on what it is and what someone does with it","who":"who runs it and who uses it, one sentence","how":[{"z":1,"role":"one sentence on how this element shows up in the service"}],"first_step":"one concrete thing someone could do this month to start it","versus":"one sentence on how it differs from the existing initiatives, or what gap it fills","watch_out":"one honest caution"}`;
+    maxTokens = 900;
+  } else if (mode === 'suggest') {
     const el = elements.find(e => e.z === Number(element));
     if (!el) return res.status(400).json({ error: 'Unknown element.' });
     system = 'You are an experienced civic organizer and democratic-design consultant. You give concrete, specific, realistic advice for small organizations and individuals. No platitudes. Respond ONLY with valid JSON, no prose before or after.';
@@ -49,6 +56,7 @@ module.exports = async (req, res) => {
     const valid = z => elements.some(e => e.z === Number(z));
     if (parsed.matches) parsed.matches = parsed.matches.filter(m => valid(m.z));
     if (parsed.gaps) parsed.gaps = parsed.gaps.filter(g => valid(g.z));
+    if (parsed.how) parsed.how = parsed.how.filter(h => valid(h.z));
     return res.status(200).json(parsed);
   } catch (err) {
     return res.status(500).json({ error: 'Could not parse the analysis. Please try again.' });

@@ -189,6 +189,28 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
 .panel .ownsug .f b{color:var(--ink);font-weight:600}
 .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
+
+/* What's needed */
+.need .picks{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:6px}
+.need .ichip{margin:0 4px 4px 0}
+.need .picks .ichip .x{color:var(--ink-3);margin-left:2px}
+.need h4{margin:8px 0 4px;font-size:.8rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.need .verdict{color:var(--ink);font-size:.92rem;max-width:76ch;margin:4px 0 2px}
+.need .verdict b{font-weight:700}
+.need .note{font-size:.75rem;color:var(--ink-3);margin:8px 0 0}
+.need .ichip .miss{color:var(--ink-3);font-size:.7rem}
+.need .acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.need .acts button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:4px 9px;font:inherit;font-size:.78rem;cursor:pointer}
+.need .acts button.solid{border:0;padding:6px 12px;background:var(--ink);color:var(--bg)}
+.need .acts button[disabled]{opacity:.5;cursor:wait}
+.need .idea{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:.9rem;max-width:76ch}
+.need .idea h3{margin:0 0 2px;font-size:1.05rem;font-weight:800}
+.need .idea ul{list-style:none;padding:0;margin:6px 0}
+.need .idea li{padding:4px 0;border-top:1px solid var(--line)}
+.need .idea li b,.need .idea p b{font-weight:600}
+.need .idea p{margin:4px 0;color:var(--ink-2)}
+.need-on .tile.gap{outline:2px dashed var(--ink-3);outline-offset:-2px}
+.tile.pick{box-shadow:inset 0 -3px 0 var(--c),0 0 0 3px var(--ink)}
 </style>
 </head>
 <body>
@@ -203,6 +225,7 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <input class="search" id="search" type="search" placeholder="Search elements (e.g. canvass, jury, co-op)" aria-label="Search elements">
   <button class="toggle" id="aitoggle" aria-pressed="false">Show AI impact</button>
   <button class="toggle" id="initoggle" aria-pressed="false">Show initiatives</button>
+  <button class="toggle" id="needtoggle" aria-pressed="false">What’s needed</button>
   <span class="hint">Swipe sideways on small screens.</span>
 </div>
 <div class="ai-legend" id="ailegend" role="group" aria-label="Filter by AI impact"><span class="lab">How much AI can take on:</span></div>
@@ -226,6 +249,12 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   </div>
 </div>
 
+<div class="ini need" id="need" hidden>
+  <div class="ini-head"><span class="lab">Tap 2 to 5 elements to see who already combines them, and where nobody does. Dashed tiles are elements no initiative in the overlay uses yet.</span></div>
+  <div class="picks" id="needpicks"></div>
+  <div id="needresult"></div>
+</div>
+
 <div class="scroller"><div class="table" id="table" role="grid" aria-label="Periodic table of democratic engagement"></div></div>
 
 <section class="families" id="families"></section>
@@ -238,6 +267,8 @@ h1{font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-0.02em;l
   <p>Turn on “Show AI impact” and each tile gets a dot in its top-right corner: empty means AI adds nothing because the point is a person doing it (voting, jury service, protest, holding office); half-filled means AI can draft, research, or organize but a person still has to show up or sign; filled means the output could be produced largely by AI with a person checking it (records requests, watchdogging, policy analysis, documenting meetings). The pattern is the interesting part: the filled dots cluster in the information and oversight columns, and almost nothing below row 5 is filled. Power and office still have to be held by someone.</p>
   <h3>The initiatives overlay</h3>
   <p>Turn on “Show initiatives” for a strip of real American civic projects, movements, platforms, and government programs, from the League of Women Voters to America.gov. Tap one and the table dims to the elements it actually uses. The point is to make comparisons visible: Occupy and the Tea Party light up neighboring tiles in Direct Action but diverge at the Electoral column; DOGE and participatory budgeting both touch oversight and spending with opposite theories of who should hold the pen. A filled dot is a live effort, an empty ring is a past one, and a dashed ring is a proposal. Each element’s detail panel tags the initiatives that use it alongside its tools and on-ramps. The mappings are a starting set and arguable; corrections and additions are welcome.</p>
+  <h3>What’s needed</h3>
+  <p>Turn on “What’s needed” and tap two to five elements. The table checks the initiatives overlay for anything that already does all of them, lists the near misses that do all but one, and says so plainly when nobody combines them. That empty answer is the useful one: it marks an opening for a new service. With nothing picked, the dashed tiles show elements no initiative on the list uses at all. “Sketch a service” asks a model to imagine one that would combine the picks; treat it as a prompt for your own thinking, not a plan.</p>
 </section>
 <footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-3);font-size:.8rem;max-width:66ch">democracytable.com · Built by Jeff Swift. Inspired by the Idealab periodic table of business functions, and standing on Sharp’s 198 Methods, Verba, Schlozman & Brady’s <em>Voice and Equality</em>, Arnstein’s Ladder, and Participedia. Placements are arguable; that is part of the point. <a href="/sources">Read about the sources and lineage →</a></footer>
 </div>
@@ -447,6 +478,7 @@ function setIni(on){
   document.getElementById('pown').hidden=!(on&&own);
 }
 function selectIni(id,scroll=true){
+  if(id&&needOn)setNeed(false);
   if(id&&!iniOn)setIni(true);
   activeIni=id;renderIni();render();
   if(id&&scroll){const chip=iniStrip.querySelector(`.ichip[data-id="${id}"]`);if(chip)chip.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}
@@ -505,6 +537,77 @@ async function suggestOwn(z){
   }catch(err){box.innerHTML=`<p style="margin:0;color:var(--f-direct);font-size:.9rem">${esc(err.message)}</p>`;}
 }
 
+/* ---------- What's needed: pick elements, see who combines them ---------- */
+let needOn=false,picks=[],needIdea=null;
+const needBox=document.getElementById('need'),needPicks=document.getElementById('needpicks'),needRes=document.getElementById('needresult'),needtoggle=document.getElementById('needtoggle');
+const MAXPICK=5;
+const usedBy=Object.fromEntries(els.map(e=>[e.z,INI.filter(i=>i.e.includes(e.z))]));
+needtoggle.onclick=()=>setNeed(!needOn);
+function setNeed(on){
+  needOn=on;needtoggle.setAttribute('aria-pressed',String(on));
+  needBox.hidden=!on;document.body.classList.toggle('need-on',on);
+  if(on){activeIni=null;renderIni();document.getElementById('close').click();}
+  renderNeed();render();
+}
+function tap(z){
+  if(!needOn)return open(z);
+  const k=picks.indexOf(z);
+  if(k>=0)picks.splice(k,1);else if(picks.length<MAXPICK)picks.push(z);else return;
+  needIdea=null;renderNeed();render();
+}
+function elChip(z,extra=''){const e=els.find(x=>x.z===z);return `<button type="button" class="ichip" style="--k:${FAM[e.f].c}" data-z="${z}" title="${esc(e.d)}"><i></i>${e.s} ${esc(e.n)}${extra}</button>`;}
+function iniChip(i,extra=''){return `<button type="button" class="ichip ${i.st}" style="--k:${KIND[i.k].c}" data-id="${i.id}" title="${esc(i.d)}"><i></i>${esc(i.n)} <span class="yr">${i.y}</span>${extra}</button>`;}
+function coverage(){
+  const all=[],near=[];
+  INI.forEach(i=>{const miss=picks.filter(z=>!i.e.includes(z));if(!miss.length)all.push(i);else if(picks.length>2&&miss.length===1)near.push({i,miss:miss[0]});});
+  return {all,near};
+}
+function renderNeed(){
+  try{history.replaceState(null,'',needOn&&picks.length?'#need-'+picks.join('-'):location.pathname+location.search);}catch{}
+  if(!needOn)return;
+  needPicks.innerHTML=picks.length?picks.map(z=>elChip(z,' <span class="x" aria-label="Remove">×</span>')).join('')+`<span class="hint">${picks.length<MAXPICK?'Tap more tiles to add':'That’s the most at once'}</span>`:'';
+  needPicks.querySelectorAll('.ichip').forEach(b=>b.onclick=()=>tap(+b.dataset.z));
+  let html='';
+  if(picks.length<2){
+    const none=els.filter(e=>!usedBy[e.z].length).sort((a,b)=>a.z-b.z);
+    html=`<p class="verdict"><b>${none.length} of ${els.length} elements</b> aren’t used by any of the ${INI.length} initiatives on the list. Tap one to start a combination.</p>${none.map(e=>elChip(e.z)).join('')}`;
+  } else {
+    const {all,near}=coverage();
+    const n=picks.length;
+    html=all.length
+      ?`<p class="verdict"><b>${all.length} initiative${all.length>1?'s':''}</b> on the list already combine${all.length>1?'':'s'} all ${n}.</p><h4>Does all ${n}</h4>${all.map(i=>iniChip(i)).join('')}`
+      :`<p class="verdict"><b>Nobody on the list combines all ${n}.</b> That may be a gap worth filling, or a sign the list is missing someone.</p>`;
+    if(near.length){html+=`<h4>Does all but one</h4>${near.map(({i,miss})=>iniChip(i,` <span class="miss">no ${els.find(x=>x.z===miss).s}</span>`)).join('')}`;}
+    const lone=picks.filter(z=>!usedBy[z].length);
+    if(lone.length)html+=`<p class="note">${lone.map(z=>els.find(x=>x.z===z).n).join(' and ')} ${lone.length>1?'are':'is'} not used by any initiative on the list.</p>`;
+    html+=`<div class="acts"><button type="button" class="ownbtn solid" id="needai">${all.length?'Sketch another service for these':'Sketch a service that combines these'}</button><button type="button" id="needclear">Clear</button></div><div id="needidea"></div>`;
+  }
+  needRes.innerHTML=html;
+  needRes.querySelectorAll('.ichip[data-z]').forEach(b=>b.onclick=()=>tap(+b.dataset.z));
+  needRes.querySelectorAll('.ichip[data-id]').forEach(b=>b.onclick=()=>{setNeed(false);selectIni(b.dataset.id);iniBox.scrollIntoView({block:'start',behavior:'smooth'});});
+  const ai=document.getElementById('needai');if(ai)ai.onclick=sketchService;
+  const clr=document.getElementById('needclear');if(clr)clr.onclick=()=>{picks=[];needIdea=null;renderNeed();render();};
+  if(needIdea)showIdea(needIdea);
+}
+async function sketchService(){
+  const box=document.getElementById('needidea'),btn=document.getElementById('needai');
+  const asked=picks.join(',');const {all,near}=coverage();
+  const nearby=[...all,...near.map(x=>x.i)].slice(0,8).map(i=>`${i.n}: ${i.d}`);
+  btn.disabled=true;box.innerHTML='<p class="note"><span class="spin"></span>Imagining a service that combines these…</p>';
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'combine',elements:picks,nearby})});
+    const d=await readJSON(r);
+    if(picks.join(',')!==asked)return;
+    needIdea=d;showIdea(d);
+  }catch(err){box.innerHTML=`<p class="note" style="color:var(--f-direct)">${esc(err.message)}</p>`;}
+  btn.disabled=false;
+}
+function showIdea(d){
+  const box=document.getElementById('needidea');if(!box)return;
+  const how=(d.how||[]).map(x=>{const e=els.find(y=>y.z===Number(x.z));return e?`<li><b>${e.s} ${esc(e.n)}:</b> ${esc(x.role)}</li>`:'';}).join('');
+  box.innerHTML=`<div class="idea"><h3>${esc(d.name)}</h3><p style="color:var(--ink)">${esc(d.pitch)}</p>${d.who?`<p><b>Who it’s for:</b> ${esc(d.who)}</p>`:''}<ul>${how}</ul>${d.first_step?`<p><b>First step:</b> ${esc(d.first_step)}</p>`:''}${d.versus?`<p><b>Compared with what exists:</b> ${esc(d.versus)}</p>`:''}${d.watch_out?`<p><b>Watch out:</b> ${esc(d.watch_out)}</p>`:''}<p class="note">A model’s sketch, not a plan or an endorsement.</p></div>`;
+}
+
 // build table
 const table=document.getElementById('table');
 PERIODS.forEach((p,i)=>{const l=document.createElement('div');l.className='plabel';l.style.gridRow=i+1;l.textContent=p;table.appendChild(l);});
@@ -513,7 +616,7 @@ els.forEach(e=>{
   const b=document.createElement('button');b.className='tile';b.style.setProperty('--c',FAM[e.f].c);
   b.style.gridRow=e.r;b.style.gridColumn=e.c+1;b.dataset.z=e.z;b.title=e.n;
   b.innerHTML=`<span class="z">${e.z}</span><span class="ai l${e.ai}" aria-hidden="true"></span><span class="sym">${e.s}</span><span class="nm">${e.n}</span>`;
-  b.onclick=()=>open(e.z);
+  b.onclick=()=>tap(e.z);
   table.appendChild(b);
 });
 
@@ -525,7 +628,7 @@ Object.entries(FAM).forEach(([k,v])=>{
   els.filter(e=>e.f===k).sort((a,b)=>a.z-b.z).forEach(e=>{
     const b=document.createElement('button');b.className='row-item';b.dataset.z=e.z;
     b.innerHTML=`<span class="s">${e.s}</span><span class="n">${e.n}</span><span class="ai l${e.ai}" aria-hidden="true"></span><span class="d">${e.z}</span>`;
-    b.onclick=()=>open(e.z);d.appendChild(b);
+    b.onclick=()=>tap(e.z);d.appendChild(b);
   });
   fsec.appendChild(d);
 });
@@ -545,11 +648,14 @@ function render(){
     let hit=!!ini&&ini.e.includes(e.z);
     let iniOk=!ini||hit;
     let gap=false;
-    if(!ini&&own&&iniOn){const st=own.matches[e.z];gap=own.gaps.includes(e.z);hit=!!st;iniOk=hit||gap;if(hit)t.style.setProperty('--k',st==='strong'?'var(--ink)':'var(--ink-3)');}
+    if(needOn){hit=false;iniOk=true;gap=!usedBy[e.z].length;}
+    else if(!ini&&own&&iniOn){const st=own.matches[e.z];gap=own.gaps.includes(e.z);hit=!!st;iniOk=hit||gap;if(hit)t.style.setProperty('--k',st==='strong'?'var(--ink)':'var(--ink-3)');}
     else if(hit)t.style.setProperty('--k',KIND[ini.k].c);
     t.classList.toggle('dim',!(famOk&&qOk&&iniOk));
     t.classList.toggle('hit',hit&&famOk&&qOk);
     t.classList.toggle('gap',gap&&famOk&&qOk);
+    t.classList.toggle('pick',needOn&&picks.includes(e.z));
+    if(needOn)t.setAttribute('aria-pressed',String(picks.includes(e.z)));else t.removeAttribute('aria-pressed');
     const row=fsec.querySelector(`.row-item[data-z="${e.z}"]`);
     row.style.display=(famOk&&qOk&&iniOk)?'':'none';
   });
@@ -593,6 +699,7 @@ document.addEventListener('keydown',ev=>{if(!panel.classList.contains('open'))re
 const h=(location.hash||'').replace('#','');
 if(/^\d+$/.test(h)&&+h>=1&&+h<=118)open(+h);
 else if(h.startsWith('ini-')&&iniById[h.slice(4)])selectIni(h.slice(4));
+else if(h.startsWith('need')){picks=[...new Set(h.slice(5).split('-').map(Number))].filter(z=>els.some(e=>e.z===z)).slice(0,MAXPICK);setNeed(true);}
 </script>
 </body>
 </html>
