@@ -70,9 +70,13 @@ elements.forEach((e, i) => {
 });
 
 // --- elements.json vs index.html ---
+// Only runs while index.html still carries its own inline copy (the E array).
 
-try {
-  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+let synced = false;
+if (!/const E = \[/.test(html)) {
+  console.log('index.html has no inline element list; skipping the sync check');
+} else try {
   const grab = (re, what) => {
     const m = html.match(re);
     if (!m) throw new Error(`could not find ${what} in index.html`);
@@ -97,6 +101,7 @@ try {
     }
   }
   for (const z of fromHtml.keys()) if (!elements.some((e) => e.z === z)) err(`z=${z} is in index.html but not in elements.json`);
+  synced = true;
 } catch (e) {
   err(`index.html comparison failed: ${e.message}`);
 }
@@ -109,4 +114,4 @@ if (errors.length) {
   console.log(`\n${errors.length} error(s), ${warnings.length} warning(s)`);
   process.exit(1);
 }
-console.log(`elements.json OK: ${elements.length} elements, in sync with index.html (${warnings.length} warning(s))`);
+console.log(`elements.json OK: ${elements.length} elements${synced ? ', in sync with index.html' : ''} (${warnings.length} warning(s))`);

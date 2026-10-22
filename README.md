@@ -22,4 +22,4 @@ Required environment variable (Vercel → Settings → Environment Variables):
 ## Editing elements
 `index.html` has its own copy of the element list in the `E` array; `elements.json` is the copy used by `/analyze`. If you change one, change the other (or regenerate `elements.json` from `index.html`).
 
-Run `node scripts/check-elements.js` to validate `elements.json` (118 elements, unique numbers and positions, valid families, required fields) and confirm it matches the `E` array in `index.html`. The same check runs in GitHub Actions on every push to `main` and every pull request.
+Run `node scripts/check-elements.js` to validate `elements.json` (118 elements, unique numbers and positions, valid families, required fields) and, while `index.html` still has its own inline `E` array, confirm the two match. The same check runs in GitHub Actions on every push to `main` and every pull request.
