@@ -9,41 +9,48 @@
 <meta property="og:description" content="The intellectual history behind the table, and a reading list for going deeper.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://democracytable.com/sources">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect x=%224%22 y=%224%22 width=%2292%22 height=%2292%22 fill=%22%23F3ECDD%22 stroke=%22%231B1812%22 stroke-width=%226%22/><rect x=%224%22 y=%224%22 width=%2292%22 height=%2216%22 fill=%22%23C8381F%22/><text x=%2250%22 y=%2282%22 font-family=%22Georgia,serif%22 font-weight=%22700%22 font-size=%2256%22 text-anchor=%22middle%22 fill=%22%231B1812%22>Dt</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400&display=swap">
 <style>
+/* Printed wall chart: newsprint stock, letterpress inks, halftone screens.
+   --bg is the paper, --surface a lighter card stock, --ink the press black. */
 :root{
   color-scheme: light;
-  --bg:#EDF0F4; --surface:#FFFFFF; --ink:#1C2430; --ink-2:#4B5665; --ink-3:#7A8594;
-  --line:#CBD2DB; --accent:#1C2430;
-  --f-info:#2F67D1; --f-delib:#1F968A; --f-elect:#6E4FD1; --f-direct:#D13F3F; --f-acct:#B8800F;
-  --f-org:#2E9348; --f-adv:#D4712A; --f-gov:#3E5F96; --f-econ:#B2407F;
-  --tint:14%;
+  --bg:#F1EADA; --surface:#F8F3E8; --ink:#1B1812; --ink-2:#4A443A; --ink-3:#857C6C;
+  --line:#CDBFA4; --rule:#1B1812; --accent:#C8381F;
+  --f-info:#1F4FA0; --f-delib:#0E7466; --f-elect:#6A3C86; --f-direct:#C8381F; --f-acct:#A87508;
+  --f-org:#2D6E2E; --f-adv:#C2601A; --f-gov:#33496B; --f-econ:#A8325E;
+  --tint:12%; --dot:26%;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --grot:"Archivo","Arial Narrow",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --bg:#141A22; --surface:#1E2631; --ink:#EEF1F5; --ink-2:#B6BFCB; --ink-3:#7F8A98;
-    --line:#2F3A48; --accent:#EEF1F5;
-    --f-info:#6B9BFF; --f-delib:#4CC9BA; --f-elect:#A58CFF; --f-direct:#FF7A7A; --f-acct:#E9B54A;
-    --f-org:#5FD47A; --f-adv:#FFA05C; --f-gov:#8AAEE8; --f-econ:#E87AB6;
-    --tint:22%;
+    --bg:#16140F; --surface:#1F1C15; --ink:#EFE6D2; --ink-2:#BDB29C; --ink-3:#857C6A;
+    --line:#3A352A; --rule:#EFE6D2; --accent:#F0704F;
+    --f-info:#7FA6EE; --f-delib:#4FC2B0; --f-elect:#B58AD6; --f-direct:#F0704F; --f-acct:#E2B24A;
+    --f-org:#7CC66E; --f-adv:#F09A55; --f-gov:#93A9CF; --f-econ:#E57AA2;
+    --tint:14%; --dot:24%;
   }
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --bg:#141A22; --surface:#1E2631; --ink:#EEF1F5; --ink-2:#B6BFCB; --ink-3:#7F8A98;
-  --line:#2F3A48; --accent:#EEF1F5;
-  --f-info:#6B9BFF; --f-delib:#4CC9BA; --f-elect:#A58CFF; --f-direct:#FF7A7A; --f-acct:#E9B54A;
-  --f-org:#5FD47A; --f-adv:#FFA05C; --f-gov:#8AAEE8; --f-econ:#E87AB6;
-  --tint:22%;
+  --bg:#16140F; --surface:#1F1C15; --ink:#EFE6D2; --ink-2:#BDB29C; --ink-3:#857C6A;
+  --line:#3A352A; --rule:#EFE6D2; --accent:#F0704F;
+  --f-info:#7FA6EE; --f-delib:#4FC2B0; --f-elect:#B58AD6; --f-direct:#F0704F; --f-acct:#E2B24A;
+  --f-org:#7CC66E; --f-adv:#F09A55; --f-gov:#93A9CF; --f-econ:#E57AA2;
+  --tint:14%; --dot:24%;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(color-mix(in srgb,var(--ink) 5%,transparent) .6px,transparent 1px);background-size:5px 5px}
 a{color:inherit}
 .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px}
 .back{display:inline-block;font-size:.85rem;color:var(--ink-2);text-decoration:none;margin-bottom:22px}
@@ -67,6 +74,22 @@ p{margin:0 0 14px;max-width:66ch}
 .read li{margin-bottom:6px}
 .read li b{color:var(--ink);font-weight:600}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-3);font-size:.8rem}
+/* print-chart look, shared with index.html */
+a:hover{color:var(--accent)}
+.back{font-family:var(--mono)!important;font-size:.72rem!important;text-transform:uppercase;letter-spacing:.1em;padding:6px 0;border-top:2px solid var(--rule);border-bottom:1px solid var(--rule);display:block!important;color:var(--ink-2)}
+.back:hover{color:var(--accent)!important}
+h1{font-family:var(--serif)!important;font-weight:700!important;letter-spacing:-0.025em!important;line-height:1!important;font-size:clamp(1.9rem,5vw,3.2rem)!important}
+.lede{font-size:1.06rem}
+footer{font-style:italic}
+h2{font-family:var(--grot);font-stretch:78%;text-transform:uppercase;letter-spacing:.04em;font-size:1.15rem;padding:8px 0 0;border-left:0;border-top:6px solid var(--c,var(--ink))}
+h2 small{font-family:var(--mono);font-size:.68rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+.work{border-radius:0;border:1.5px solid var(--rule);border-top:5px solid var(--c,var(--ink));box-shadow:4px 4px 0 var(--rule)}
+.work .t{font-family:var(--serif);font-size:1.1rem;font-weight:700}
+.work .m{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+.work .tbl b{font-family:var(--grot);font-weight:800}
+.read{border-top:4px double var(--rule)}
+.read h3{font-family:var(--grot);font-stretch:78%;text-transform:uppercase;letter-spacing:.06em}
+footer{border-top:2px solid var(--rule)}
 </style>
 </head>
 <body>
